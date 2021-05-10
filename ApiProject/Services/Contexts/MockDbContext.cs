@@ -1,18 +1,20 @@
+using System;
 using System.Collections.Generic;
 using ApiProject.Models;
 
 namespace ApiProject.Services.Contexts
 {
-    public class MockContext : IContext
+    public class MockDbContext : IDisposable
     {
-        public IEnumerable<MechaSwitch> Switches { get; set; }
+        public virtual IEnumerable<MechaSwitch> Switches { get; set; }
 
-        public MockContext()
+        public MockDbContext()
         {
             Switches = new List<MechaSwitch>
             {
                 new MechaSwitch()
                 {
+                    Id = 1,
                     Manufacturer = "Razer",
                     FullName = "Razer Green",
                     Type = SwitchType.Clicky,
@@ -24,6 +26,7 @@ namespace ApiProject.Services.Contexts
                 },
                 new MechaSwitch()
                 {
+                    Id = 2,
                     Manufacturer = "Razer",
                     FullName = "Razer Orange",
                     Type = SwitchType.Tactile,
@@ -35,6 +38,7 @@ namespace ApiProject.Services.Contexts
                 },
                 new MechaSwitch()
                 {
+                    Id = 3,
                     Manufacturer = "Razer",
                     FullName = "Razer Yellow",
                     Type = SwitchType.Linear,
@@ -45,6 +49,16 @@ namespace ApiProject.Services.Contexts
                     Lifespan = 80_000_000,
                 }
             };
+        }
+
+        public int SaveChanges()
+        {
+            return 1;
+        }
+
+        public void Dispose()
+        {
+            return;
         }
 
     }

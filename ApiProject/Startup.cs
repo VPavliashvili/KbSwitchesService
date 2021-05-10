@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ApiProject.Services.Contexts;
+using ApiProject.Services.UnitsOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -31,6 +33,11 @@ namespace ApiProject
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiProject", Version = "v1" });
             });
+
+            services.AddScoped<IUnitOfWork, MockUnitOfWork>();
+
+            //droebit sanam nagd DbContexts chavsvam
+            services.AddScoped<MockDbContext, MockDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -64,25 +64,22 @@ namespace ApiProject.Test
             Assert.NotNull(allSwitches);
         }
 
-        private static void TestRepositoryAndUnitOfWorkPatters()
+        [Theory]
+        [ClassData(typeof(Test_MechaSwitchRepository_GetSwitch_Method_Data))]
+        public void Test_MechaSwitchRepository_GetSwitch_Method(IUnitOfWork unitOfWork, int id)
         {
-            IUnitOfWork unitOfWork = new MockUnitOfWork(new Services.Contexts.MockDbContext());
+            MechaSwitch certainSwitchById = unitOfWork.SwitchesRepository.GetSwitch(id);
 
-            List<MechaSwitch> allSwitches = unitOfWork.SwitchesRepository.GetSwitches().ToList();
-            // allSwitches.ForEach(@switch => @switch.PrintInfo());
+            Assert.NotNull(certainSwitchById);
+        }
 
-            MechaSwitch secondSwitch = unitOfWork.SwitchesRepository.GetSwitch(2);
-            // secondSwitch.PrintInfo();
+        [Theory]
+        [ClassData(typeof(Test_MechaSwitchRepository_SwitchExists_Method_Data))]
+        public void Test_MechaSwitchRepository_SwitchExists_Method(IUnitOfWork unitOfWork, int id)
+        {
+            bool switchExists = unitOfWork.SwitchesRepository.SwtichExists(id);
 
-            // int id = 4;
-            // if (unitOfWork.Switches.SwtichExists(id))
-            // {
-            //     unitOfWork.Switches.GetSwitch(id).PrintInfo();
-            // }
-            // else
-            // {
-            //     Console.WriteLine($"Record on id {id} does not exist");
-            // }
+            Assert.True(switchExists, $"Switch record on id {id} does not exists in dbContext");
         }
 
         private class Test_ISwitchesRepository_Interface_Data : IEnumerable<object[]>
@@ -100,6 +97,30 @@ namespace ApiProject.Test
             public IEnumerator<object[]> GetEnumerator()
             {
                 yield return new object[] { new MockUnitOfWork(new MockDbContext()) };
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
+        private class Test_MechaSwitchRepository_GetSwitch_Method_Data : IEnumerable<object[]>
+        {
+            public IEnumerator<object[]> GetEnumerator()
+            {
+                yield return new object[] { new MockUnitOfWork(new MockDbContext()), 1 };
+                yield return new object[] { new MockUnitOfWork(new MockDbContext()), 2 };
+                yield return new object[] { new MockUnitOfWork(new MockDbContext()), 3 };
+            }
+
+            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        }
+
+        private class Test_MechaSwitchRepository_SwitchExists_Method_Data : IEnumerable<object[]>
+        {
+            public IEnumerator<object[]> GetEnumerator()
+            {
+                yield return new object[] { new MockUnitOfWork(new MockDbContext()), 1 };
+                yield return new object[] { new MockUnitOfWork(new MockDbContext()), 2 };
+                yield return new object[] { new MockUnitOfWork(new MockDbContext()), 3 };
             }
 
             IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

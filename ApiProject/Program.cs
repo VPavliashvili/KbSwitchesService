@@ -15,6 +15,7 @@ namespace ApiProject
     {
         public static void Main(string[] args)
         {
+            // TestRepositoryAndUnitOfWorkPatters();
             CreateHostBuilder(args).Build().Run();
         }
 

@@ -7,13 +7,13 @@ namespace ApiProject.Services.UnitsOfWork
     {
         private readonly MockDbContext _context;
 
-        public IMechaSwitchRepository Switches { get; private set; }
+        public IMechaSwitchRepository SwitchesRepository { get; private set; }
 
         public MockUnitOfWork(MockDbContext context)
         {
             _context = context;
 
-            Switches = new MockMechaSwitchRepository(_context);
+            SwitchesRepository = new MockMechaSwitchRepository(_context);
         }
 
         public int Complete()

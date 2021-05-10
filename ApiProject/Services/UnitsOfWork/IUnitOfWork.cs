@@ -5,7 +5,7 @@ namespace ApiProject.Services.UnitsOfWork
 {
     public interface IUnitOfWork : IDisposable
     {
-        IMechaSwitchRepository Switches { get; }
+        IMechaSwitchRepository SwitchesRepository { get; }
         int Complete();
     }
 

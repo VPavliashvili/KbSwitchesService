@@ -1,5 +1,6 @@
 using System;
 using ApiProject.Models;
+using ApiProject.Dtos;
 
 namespace ApiProject
 {
@@ -19,6 +20,20 @@ namespace ApiProject
                 + $"BottomOut Force: {@switch.BottomOutForce} gram\n"
                 + $"BottomOut Distance: {@switch.BottomOutDistance}mm\n"
                 + $"Lifespan: {@switch.Lifespan} keystroke\n";
+
+        public static SwitchDto ToDto(this MechaSwitch @switch)
+            => new SwitchDto()
+            {
+                Id = @switch.Id,
+                Manufacturer = @switch.Manufacturer,
+                FullName = @switch.FullName,
+                SwitchType = @switch.Type.ToString(),
+                ActuationForce = @switch.ActuationForce,
+                BottomOutForce = @switch.BottomOutForce,
+                ActuationDistance = @switch.ActuationDistance,
+                BottomOutDistance = @switch.BottomOutDistance,
+                Lifespan = @switch.Lifespan
+            };
 
     }
 

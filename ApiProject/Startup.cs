@@ -1,3 +1,4 @@
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using ApiProject.SwaggerFilters;
 
 namespace ApiProject
 {
@@ -31,7 +33,8 @@ namespace ApiProject
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ApiProject", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mechanical Keyboard Switches", Version = "v1" });
+                c.DocumentFilter<SwaggerDocumentFilter>();
             });
 
             services.AddScoped<IUnitOfWork, MockUnitOfWork>();
@@ -47,7 +50,7 @@ namespace ApiProject
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiProject v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Mechanical Keyboard Switches"));
             }
 
             app.UseHttpsRedirection();

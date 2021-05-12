@@ -4,7 +4,7 @@ using ApiProject.Dtos;
 
 namespace ApiProject
 {
-    public static class Utils
+    internal static class Utils
     {
         public static void PrintInfo(this MechaSwitch @switch)
         {
@@ -38,6 +38,19 @@ namespace ApiProject
         public static bool IsSameSwitch(this MechaSwitch @switch, MechaSwitch second)
             => @switch.Manufacturer == second.Manufacturer
             && @switch.FullName == second.FullName;
+
+        public static void RemapValuesFromSource(this MechaSwitch @switch, MechaSwitch source)
+        {
+            @switch.Id = source.Id;
+            @switch.Manufacturer = source.Manufacturer;
+            @switch.FullName = source.FullName;
+            @switch.Type = source.Type;
+            @switch.ActuationForce = source.ActuationForce;
+            @switch.BottomOutForce = source.BottomOutForce;
+            @switch.ActuationDistance = source.ActuationDistance;
+            @switch.BottomOutDistance = source.BottomOutDistance;
+            @switch.Lifespan = source.Lifespan;
+        }
 
     }
 

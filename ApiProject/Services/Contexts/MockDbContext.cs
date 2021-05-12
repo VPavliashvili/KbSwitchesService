@@ -77,6 +77,20 @@ namespace ApiProject.Services.Contexts
             return true;
         }
 
+        public bool ChangeRecord(MechaSwitch sourceSwitchRecord, int id)
+        {
+            if (!_indexes.Contains(id))
+                return false;
+
+            MechaSwitch switchToEdit = Switches.FirstOrDefault(swt => swt.Id == id);
+            int indexOfSwitchToEdit = Switches.IndexOf(switchToEdit);
+            switchToEdit.RemapValuesFromSource(sourceSwitchRecord);
+            switchToEdit.Id = id;
+            Switches[indexOfSwitchToEdit] = switchToEdit;
+
+            return true;
+        }
+
         public int SaveChanges()
         {
             return 1;

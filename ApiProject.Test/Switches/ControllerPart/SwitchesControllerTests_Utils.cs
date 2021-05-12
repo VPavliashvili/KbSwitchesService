@@ -12,6 +12,8 @@ namespace ApiProject.Test.Switches.ControllerPart
                 Assert.IsType<TResult>(result);
             else if (result is ObjectResult)
                 Assert.IsType<TObjResult>(result);
+            else if (result == null)
+                throw new NullReferenceException("controlleridan dabrunebuli result aris null, most likely controlleridan vabrunebineb null-s");
             else throw new NotImplementedException("Am momentshi rac vici is aris rom IActionResult-ma mxolod am 2 saxis sheidzleba daabrunos");
         }
 
@@ -21,7 +23,9 @@ namespace ApiProject.Test.Switches.ControllerPart
                 Assert.IsNotType<TResult>(result);
             else if (result is ObjectResult)
                 Assert.IsNotType<TObjResult>(result);
-            else throw new NotImplementedException("Am momentshi rac vici is aris rom IActionResult-ma mxolod am 2 saxis sheidzleba daabrunos");
+            else if (result == null)
+                throw new NullReferenceException("controlleridan dabrunebuli result aris null, most likely controlleridan vabrunebineb null-s");
+            else throw new NotImplementedException($"Am momentshi rac vici is aris rom IActionResult-ma mxolod am 2 saxis sheidzleba daabrunos");
         }
     }
 }

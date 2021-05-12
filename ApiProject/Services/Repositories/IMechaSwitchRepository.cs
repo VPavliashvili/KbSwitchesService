@@ -12,5 +12,6 @@ namespace ApiProject.Services.Repositories
 
         //TO DO create, update, delete
         bool CreateSwitch(MechaSwitch switchToCreate);
+        bool UpdateSwitch(MechaSwitch sourceSwitch, int id);
     }
 }

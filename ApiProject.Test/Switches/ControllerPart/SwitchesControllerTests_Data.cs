@@ -50,5 +50,28 @@ namespace ApiProject.Test.Switches.ControllerPart
             }
         }
 
+        public static IEnumerable<object[]> UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful_Data
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new MechaSwitch()
+                    {
+                        Id = 2,
+                        Manufacturer = "Kailh",
+                        FullName = "Box Jade",
+                        Type = SwitchType.Clicky,
+                        ActuationForce = 50,
+                        BottomOutForce = 75,
+                        ActuationDistance = 1.8f,
+                        BottomOutDistance = 3.6f,
+                        Lifespan = 60_000_000
+                    },
+                    2//id
+                };
+            }
+        }
+
     }
 }

@@ -42,6 +42,11 @@ namespace ApiProject.Services.Repositories
         {
             return _dbContext.AddRecord(switchToCreate);
         }
+
+        public bool UpdateSwitch(MechaSwitch sourceSwitch, int id)
+        {
+            return _dbContext.ChangeRecord(sourceSwitch, id);
+        }
     }
 
 }

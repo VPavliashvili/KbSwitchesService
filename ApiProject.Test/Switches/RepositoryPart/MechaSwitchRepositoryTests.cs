@@ -19,13 +19,15 @@ namespace ApiProject.Test.Switches.RepositoryPart
             => MechaSwitchRepositoryTests_Data.MechaSwitchRepository_SwitchExistsByObject_Method_Data;
         public static IEnumerable<object[]> Test_MechaSwitchRepository_CreateSwitch_Method_Data
             => MechaSwitchRepositoryTests_Data.Test_MechaSwitchRepository_CreateSwitch_Method_Data;
+        public static IEnumerable<object[]> Test_MechaSwitchRepository_UpdateSwitch_Method_Data
+            => MechaSwitchRepositoryTests_Data.Test_MechaSwitchRepository_UpdateSwitch_Method_Data;
 
         [Fact]
         public void Test_MockDbContext_Concrete_Implementation()
         {
             MockDbContext mockDbContext = new();
 
-            IEnumerable<MechaSwitch> switches = mockDbContext.Switches;
+            var switches = mockDbContext.Switches;
 
             Assert.NotNull(switches);
         }
@@ -95,6 +97,16 @@ namespace ApiProject.Test.Switches.RepositoryPart
 
             Assert.True(switchCreated, $"Something went wrong in dbContext during Creation of {switchToCreate.FullName} with id {switchToCreate.Id}");
         }
+
+        [Theory]
+        [MemberData(nameof(Test_MechaSwitchRepository_UpdateSwitch_Method_Data))]
+        public void Test_MechaSwitchRepository_UpdateSwitch_Method(MechaSwitch sourceSwitch, int id)
+        {
+            bool switchUpdated = UnitOfWork.SwitchesRepository.UpdateSwitch(sourceSwitch, id);
+
+            Assert.True(switchUpdated, $"Something went wrong in dbContext during update of {sourceSwitch.FullName} with id {sourceSwitch.Id}");
+        }
+
 
     }
 

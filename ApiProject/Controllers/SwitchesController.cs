@@ -24,8 +24,11 @@ namespace ApiProject.Controllers
 
         // api/switches
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SwitchDto>))]
         public IActionResult GetSwitches()
         {
+
             ICollection<MechaSwitch> switches = _switchesRepository.GetSwitches();
 
             if (!ModelState.IsValid)
@@ -38,6 +41,9 @@ namespace ApiProject.Controllers
 
         // api/switches/switchId
         [HttpGet("{switchId}", Name = "GetSwitch")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SwitchDto))]
         public IActionResult GetSwitch(int switchId)
         {
             if (!_switchesRepository.SwtichExists(switchId))
@@ -58,6 +64,10 @@ namespace ApiProject.Controllers
 
         // api/switches
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(MechaSwitch))]
         public IActionResult CreateSwitch([FromBody] MechaSwitch switchToCreate)
         {
 
@@ -82,8 +92,54 @@ namespace ApiProject.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
             }
 
-            _unitOfWork.Complete();
+            if (_unitOfWork.Complete() <= 0)
+            {
+                ModelState.AddModelError(string.Empty,
+                    $"Something went wrong completing during cration of {switchToCreate.FullName}");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+            }
+
             return CreatedAtAction("GetSwitch", new { switchId = switchToCreate.Id }, switchToCreate);
+        }
+
+        // api/switches
+        [HttpPatch("{switchId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult UpdateSwitch([FromBody] MechaSwitch source, int switchId)
+        {
+
+            if (!_switchesRepository.SwtichExists(switchId))
+            {
+                return NotFound(ModelState);
+            }
+
+            if (source == null)
+            {
+                ModelState.AddModelError(string.Empty,
+                    $"MechaSwitch parameter '{nameof(source)}' is null'");
+                return StatusCode(StatusCodes.Status400BadRequest, ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_switchesRepository.UpdateSwitch(source, switchId))
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+            }
+
+            if (_unitOfWork.Complete() <= 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+            }
+
+            return NoContent();
         }
 
     }

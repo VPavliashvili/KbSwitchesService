@@ -32,6 +32,16 @@ namespace ApiProject.Services.Repositories
         {
             return _dbContext.Switches.Any(@switch => @switch.Id == id);
         }
+
+        public bool SwitchExists(MechaSwitch @switch)
+        {
+            return _dbContext.Switches.Any(swt => swt.IsSameSwitch(@switch));
+        }
+
+        public bool CreateSwitch(MechaSwitch switchToCreate)
+        {
+            return _dbContext.AddRecord(switchToCreate);
+        }
     }
 
 }

@@ -15,11 +15,6 @@ namespace ApiProject.SwaggerFilters
                 throw new ArgumentNullException(nameof(swaggerDoc));
             }
 
-
-            // swaggerDoc.Tags = new List<OpenApiTag> {
-            //         new OpenApiTag{ Name = "Switches", Description = string.Empty }
-            //     };
-
             SetupComponent(swaggerDoc);
             SetupPath(swaggerDoc);
         }

@@ -34,13 +34,13 @@ namespace ApiProject
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mechanical Keyboard Switches", Version = "v1" });
-                c.DocumentFilter<SwaggerDocumentFilter>();
+                //c.DocumentFilter<SwaggerDocumentFilter>();
             });
 
-            services.AddScoped<IUnitOfWork, MockUnitOfWork>();
+            services.AddSingleton<IUnitOfWork, MockUnitOfWork>();
 
             //droebit sanam nagd DbContexts chavsvam
-            services.AddScoped<MockDbContext, MockDbContext>();
+            // services.AddScoped<MockDbContext, MockDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

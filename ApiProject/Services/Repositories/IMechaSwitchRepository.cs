@@ -8,7 +8,9 @@ namespace ApiProject.Services.Repositories
         ICollection<MechaSwitch> GetSwitches();
         MechaSwitch GetSwitch(int id);
         bool SwtichExists(int id);
+        bool SwitchExists(MechaSwitch @switch);
 
         //TO DO create, update, delete
+        bool CreateSwitch(MechaSwitch switchToCreate);
     }
 }

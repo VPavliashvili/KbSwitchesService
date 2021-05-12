@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Collections.Generic;
 using ApiProject.Models;
@@ -6,10 +7,19 @@ namespace ApiProject.Services.Contexts
 {
     public class MockDbContext : IDisposable
     {
-        public virtual IEnumerable<MechaSwitch> Switches { get; set; }
+
+        public static int instanceCount;
+
+        public List<MechaSwitch> Switches { get; set; }
+
+        //mocking incremental Db id
+        private List<int> _indexes;
 
         public MockDbContext()
         {
+            instanceCount++;
+            _indexes = new();
+
             Switches = new List<MechaSwitch>
             {
                 new MechaSwitch()
@@ -49,6 +59,22 @@ namespace ApiProject.Services.Contexts
                     Lifespan = 80_000_000,
                 }
             };
+
+            for (int i = 1; i <= Switches.Count; i++)
+            {
+                _indexes.Add(i);
+            }
+        }
+
+        public bool AddRecord(MechaSwitch newSwitchRecord)
+        {
+            if (_indexes.Contains(newSwitchRecord.Id))
+                return false;
+
+            Switches.Add(newSwitchRecord);
+
+            _indexes.Add(newSwitchRecord.Id);
+            return true;
         }
 
         public int SaveChanges()

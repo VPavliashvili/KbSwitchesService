@@ -9,9 +9,9 @@ namespace ApiProject.Services.UnitsOfWork
 
         public IMechaSwitchRepository SwitchesRepository { get; private set; }
 
-        public MockUnitOfWork(MockDbContext context)
+        public MockUnitOfWork()
         {
-            _context = context;
+            _context = new();
 
             SwitchesRepository = new MockMechaSwitchRepository(_context);
         }

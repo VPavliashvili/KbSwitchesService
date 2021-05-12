@@ -35,6 +35,10 @@ namespace ApiProject
                 Lifespan = @switch.Lifespan
             };
 
+        public static bool IsSameSwitch(this MechaSwitch @switch, MechaSwitch second)
+            => @switch.Manufacturer == second.Manufacturer
+            && @switch.FullName == second.FullName;
+
     }
 
 }

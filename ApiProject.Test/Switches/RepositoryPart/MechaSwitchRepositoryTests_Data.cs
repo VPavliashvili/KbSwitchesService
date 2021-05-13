@@ -107,6 +107,19 @@ namespace ApiProject.Test.Switches.RepositoryPart
             }
         }
 
+        public static IEnumerable<object[]> TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data
+        {
+            get
+            {
+                yield return new object[] { "CreateSwitch", new object[] { GetMockSwitchWithCustomId(1) } };
+                yield return new object[] { "CreateSwitch", new object[] { GetMockSwitchWithCustomId(15) } };
+                yield return new object[] { "UpdateSwitch", new object[] { GetMockSwitchWithCustomId(1), 1 } };
+                yield return new object[] { "UpdateSwitch", new object[] { GetMockSwitchWithCustomId(15), 15 } };
+                yield return new object[] { "DeleteSwitch", new object[] { 1 } };
+                yield return new object[] { "DeleteSwitch", new object[] { 15 } };
+            }
+        }
+
         public static MechaSwitch GetMockSwitchWithCustomId(int id)
             => new MechaSwitch()
             {

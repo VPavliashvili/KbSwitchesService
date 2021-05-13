@@ -10,6 +10,8 @@ namespace ApiProject.Services.Repositories
     public class MockMechaSwitchRepository : IMechaSwitchRepository
     {
 
+        public bool MethodMockingEnabled { get; private set; }
+
         private readonly MockDbContext _dbContext;
 
         public MockMechaSwitchRepository(MockDbContext context)
@@ -40,18 +42,22 @@ namespace ApiProject.Services.Repositories
 
         public bool CreateSwitch(MechaSwitch switchToCreate)
         {
-            return _dbContext.AddRecord(switchToCreate);
+            return _dbContext.AddRecord(switchToCreate) && !MethodMockingEnabled;
         }
 
         public bool UpdateSwitch(MechaSwitch sourceSwitch, int id)
         {
-            return _dbContext.ChangeRecord(sourceSwitch, id);
+            return _dbContext.ChangeRecord(sourceSwitch, id) && !MethodMockingEnabled;
         }
 
         public bool DeleteSwitch(int id)
         {
-            return _dbContext.DeleteRecord(id);
+            return _dbContext.DeleteRecord(id) && !MethodMockingEnabled;
         }
+
+        public void EnableMethodMocking() => MethodMockingEnabled = true;
+        public void DisableMethodMocking() => MethodMockingEnabled = false;
+
     }
 
 }

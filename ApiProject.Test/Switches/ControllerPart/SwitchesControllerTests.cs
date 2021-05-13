@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ApiProject.Controllers;
 using ApiProject.Models;
 using ApiProject.Services.Contexts;
+using ApiProject.Services.Repositories;
 using ApiProject.Services.UnitsOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -107,7 +108,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         public void UpdateSwitch_ShouldReturn_BadRequest_WhenModelstateIsNotValid()
         {
             SwitchesController controller = TargetController;
-            controller.ModelState.AddModelError("Test Key", "Test Error Message");
+            controller.AddSampleErrorToModelState();
             IActionResult result = controller.UpdateSwitch(new(), 1);
 
             SwitchesControllerTests_Utils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
@@ -137,6 +138,65 @@ namespace ApiProject.Test.Switches.ControllerPart
         public void UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful(MechaSwitch source, int id)
         {
             IActionResult result = TargetController.UpdateSwitch(source, id);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public void ShouldReturnBadRequest_WhenModelStateIsInvalid_AndDeletingRecord()
+        {
+            SwitchesController controller = TargetController;
+
+            controller.AddSampleErrorToModelState();
+            IActionResult result = controller.DeleteSwitch(1);
+
+            SwitchesControllerTests_Utils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+        }
+
+        [Theory]
+        [InlineData(15)]
+        public void ShouldReturnNotFound_WhenPassedIdDoesNotExistIdDatabase(int id)
+        {
+            IActionResult result = TargetController.DeleteSwitch(id);
+
+            SwitchesControllerTests_Utils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public void ShouldReturnInternalServerError_WhenDbContextRefusesToDeleteRecord()
+        {
+            IUnitOfWork unitOfWork = new MockUnitOfWork();
+            SwitchesController controller = new(unitOfWork);
+            (unitOfWork.SwitchesRepository as MockMechaSwitchRepository).EnableMethodMocking();
+
+            bool mockingActivated = (unitOfWork.SwitchesRepository as MockMechaSwitchRepository).MethodMockingEnabled;
+            Assert.True(mockingActivated, "method mocking has not activated");
+
+            IActionResult result = controller.DeleteSwitch(1);
+            Assert.NotNull(result);
+
+            int? statusCode = ((StatusCodeResult)result).StatusCode;
+
+            Assert.Equal(StatusCodes.Status500InternalServerError, statusCode);
+        }
+
+        [Fact]
+        public void ShouldReturnInternalServerError_WhenUnitOfWorkCannotComplete()
+        {
+            IUnitOfWork unitOfWork = new MockUnitOfWork();
+            ((MockUnitOfWork)unitOfWork).EnableMethodMocking();
+            SwitchesController controller = new(unitOfWork);
+
+            IActionResult result = controller.DeleteSwitch(1);
+            int? statuscode = ((ObjectResult)result).StatusCode;
+
+            Assert.Equal(StatusCodes.Status500InternalServerError, statuscode);
+        }
+
+        [Fact]
+        public void ShoulReturnNoContentResult_WhenRecordDeleted()
+        {
+            IActionResult result = TargetController.DeleteSwitch(1);
 
             Assert.IsType<NoContentResult>(result);
         }

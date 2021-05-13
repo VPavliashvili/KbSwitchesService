@@ -1,3 +1,4 @@
+using System.Reflection;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace ApiProject.Test.Switches.RepositoryPart
             => MechaSwitchRepositoryTests_Data.CreateSwitch_Method_Data;
         public static IEnumerable<object[]> UpdateSwitch_Method_Data
             => MechaSwitchRepositoryTests_Data.UpdateSwitch_Method_Data;
+        public static IEnumerable<object[]> TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data
+            => MechaSwitchRepositoryTests_Data.TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data;
 
         [Fact]
         public void ShouldNotReturnNull_WhenAccessingSwitchesRepository()
@@ -137,6 +140,24 @@ namespace ApiProject.Test.Switches.RepositoryPart
 
             bool deleted = repository.DeleteSwitch(id);
             Assert.True(deleted, $"could not delete record on id {id}");
+        }
+
+        [Theory]
+        [MemberData(nameof(TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data))]
+        public void TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled(string methodName, object[] methodParams)
+        {
+            if (UnitOfWork.SwitchesRepository is not MockMechaSwitchRepository)
+                throw new InvalidSubtypeException(typeof(IMechaSwitchRepository));
+
+            MockMechaSwitchRepository repository = (UnitOfWork.SwitchesRepository as MockMechaSwitchRepository);
+            MethodInfo targetMethod = repository.GetType().GetMethod(methodName);
+
+            if (targetMethod == null)
+                throw new MissingMethodException("Repository");
+
+            repository.EnableMethodMocking();
+            bool result = (bool)targetMethod.Invoke(repository, methodParams);
+            Assert.False(result);
         }
 
     }

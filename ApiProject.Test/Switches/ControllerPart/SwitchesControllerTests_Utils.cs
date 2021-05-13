@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xunit;
 
 namespace ApiProject.Test.Switches.ControllerPart
@@ -27,5 +28,11 @@ namespace ApiProject.Test.Switches.ControllerPart
                 throw new NullReferenceException("controlleridan dabrunebuli result aris null, most likely controlleridan vabrunebineb null-s");
             else throw new NotImplementedException($"Am momentshi rac vici is aris rom IActionResult-ma mxolod am 2 saxis sheidzleba daabrunos");
         }
+
+        public static void AddSampleErrorToModelState(this Controller controller)
+        {
+            controller.ModelState.AddModelError("Test Key", "Test error description");
+        }
+
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ApiProject.Services.UnitsOfWork;
 using ApiProject.Services.Repositories;
@@ -103,7 +104,7 @@ namespace ApiProject.Controllers
             return CreatedAtAction("GetSwitch", new { switchId = switchToCreate.Id }, switchToCreate);
         }
 
-        // api/switches
+        // api/switches/switchId
         [HttpPatch("{switchId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -132,6 +133,34 @@ namespace ApiProject.Controllers
             if (!_switchesRepository.UpdateSwitch(source, switchId))
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+            }
+
+            if (_unitOfWork.Complete() <= 0)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ModelState);
+            }
+
+            return NoContent();
+        }
+
+        // api/switches/switchId
+        [HttpDelete("{switchId}")]
+        public IActionResult DeleteSwitch(int switchId)
+        {
+
+            if (!_switchesRepository.SwitchExists(switchId))
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_switchesRepository.DeleteSwitch(switchId))
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
 
             if (_unitOfWork.Complete() <= 0)

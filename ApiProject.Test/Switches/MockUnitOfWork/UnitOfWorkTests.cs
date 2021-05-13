@@ -10,15 +10,18 @@ namespace ApiProject.Test.Switches.MockUnitOfWorkPart
         private IUnitOfWork UnitOfWork => new MockUnitOfWork();
 
         [Fact]
-        public void Test_IUnitOfWork_Interface()
+        public void ShouldReturnPositive_WhenCompleting()
         {
-            Assert.NotNull(UnitOfWork);
+            Assert.True(UnitOfWork.Complete() > 0);
         }
 
         [Fact]
-        public void Complete_Method_ShouldReturnTrue()
+        public void ShouldReturnNegative_WhenCompletingIsMocked()
         {
-            Assert.True(UnitOfWork.Complete() > 0);
+            IUnitOfWork unitOfWork = new MockUnitOfWork();
+            ((MockUnitOfWork)unitOfWork).EnableMethodMocking();
+
+            Assert.False(UnitOfWork.Complete() < 0);
         }
 
     }

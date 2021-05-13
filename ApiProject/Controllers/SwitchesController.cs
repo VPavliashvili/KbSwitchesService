@@ -46,7 +46,7 @@ namespace ApiProject.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SwitchDto))]
         public IActionResult GetSwitch(int switchId)
         {
-            if (!_switchesRepository.SwtichExists(switchId))
+            if (!_switchesRepository.SwitchExists(switchId))
             {
                 return NotFound();
             }
@@ -112,7 +112,7 @@ namespace ApiProject.Controllers
         public IActionResult UpdateSwitch([FromBody] MechaSwitch source, int switchId)
         {
 
-            if (!_switchesRepository.SwtichExists(switchId))
+            if (!_switchesRepository.SwitchExists(switchId))
             {
                 return NotFound(ModelState);
             }

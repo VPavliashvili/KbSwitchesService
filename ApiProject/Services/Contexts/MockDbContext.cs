@@ -91,6 +91,18 @@ namespace ApiProject.Services.Contexts
             return true;
         }
 
+        public bool DeleteRecord(int id)
+        {
+            if (!_indexes.Contains(id))
+                return false;
+
+            MechaSwitch switchToDelete = Switches.FirstOrDefault(swt => swt.Id == id);
+            int indexOfSwitchToDelete = Switches.IndexOf(switchToDelete);
+            Switches.RemoveAt(indexOfSwitchToDelete);
+
+            return true;
+        }
+
         public int SaveChanges()
         {
             return 1;

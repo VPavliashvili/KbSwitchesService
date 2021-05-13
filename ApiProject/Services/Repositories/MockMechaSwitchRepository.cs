@@ -28,7 +28,7 @@ namespace ApiProject.Services.Repositories
             return _dbContext.Switches.OrderBy(@switch => @switch.Manufacturer).ToList();
         }
 
-        public bool SwtichExists(int id)
+        public bool SwitchExists(int id)
         {
             return _dbContext.Switches.Any(@switch => @switch.Id == id);
         }
@@ -46,6 +46,11 @@ namespace ApiProject.Services.Repositories
         public bool UpdateSwitch(MechaSwitch sourceSwitch, int id)
         {
             return _dbContext.ChangeRecord(sourceSwitch, id);
+        }
+
+        public bool DeleteSwitch(int id)
+        {
+            return _dbContext.DeleteRecord(id);
         }
     }
 

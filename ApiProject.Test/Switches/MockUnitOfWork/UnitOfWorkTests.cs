@@ -1,3 +1,4 @@
+using ApiProject.Services.Repositories;
 using ApiProject.Services.UnitsOfWork;
 using Xunit;
 
@@ -19,5 +20,6 @@ namespace ApiProject.Test.Switches.MockUnitOfWorkPart
         {
             Assert.True(UnitOfWork.Complete() > 0);
         }
+
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace ApiProject.Test
+namespace ApiProject.Test.Helpers
 {
     public class InvalidSubtypeException : Exception
     {

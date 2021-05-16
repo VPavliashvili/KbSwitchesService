@@ -8,16 +8,18 @@ namespace ApiProject.Services.UnitsOfWork
 {
     public class MockUnitOfWork : IUnitOfWork
     {
-        private readonly MockDbContext _context;
+        public readonly MockDbContext _context;
         private bool _methodMockingEnabled;
 
-        public IMechaSwitchRepository SwitchesRepository { get; private set; }
+        public IMechaSwitchRepository SwitchesRepository { get; }
+        public IManufacturerRepository ManufacturerRepository { get; }
 
         public MockUnitOfWork()
         {
             _context = new();
 
             SwitchesRepository = new MockMechaSwitchRepository(_context);
+            ManufacturerRepository = new MockManufacturerRepository(_context);
         }
 
         public int Complete()

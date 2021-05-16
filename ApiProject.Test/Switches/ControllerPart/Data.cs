@@ -3,7 +3,7 @@ using ApiProject.Models;
 
 namespace ApiProject.Test.Switches.ControllerPart
 {
-    internal static class SwitchesControllerTests_Data
+    internal static class Data
     {
         public static IEnumerable<object[]> CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data
         {

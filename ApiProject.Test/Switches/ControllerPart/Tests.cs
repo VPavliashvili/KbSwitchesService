@@ -5,6 +5,7 @@ using ApiProject.Models;
 using ApiProject.Services.Contexts;
 using ApiProject.Services.Repositories;
 using ApiProject.Services.UnitsOfWork;
+using ApiProject.Test.Helpers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
@@ -12,17 +13,17 @@ using Xunit;
 namespace ApiProject.Test.Switches.ControllerPart
 {
 
-    public class SwitchesControllerTests
+    public class Tests
     {
 
         private SwitchesController TargetController => new SwitchesController(new MockUnitOfWork());
 
         public static IEnumerable<object[]> CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data
-            => SwitchesControllerTests_Data.CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data;
+            => Data.CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data;
         public static IEnumerable<object[]> CreateSwitch_ShouldReturn_CreatedAtAction_IfSuccessful_Data
-            => SwitchesControllerTests_Data.CreateSwitch_ShouldReturn_CreatedAtAction_IfSuccessful_Data;
+            => Data.CreateSwitch_ShouldReturn_CreatedAtAction_IfSuccessful_Data;
         public static IEnumerable<object[]> UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful_Data
-            => SwitchesControllerTests_Data.UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful_Data;
+            => Data.UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful_Data;
 
         [Fact]
         public void SwitchesController_ShouldBe_Controller()
@@ -43,7 +44,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.GetSwitches();
 
-            SwitchesControllerTests_Utils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            ControllerTestsUtils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -74,7 +75,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.GetSwitch(id);
 
-            SwitchesControllerTests_Utils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            ControllerTestsUtils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -83,7 +84,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.CreateSwitch(duplicatingSwitch);
 
-            SwitchesControllerTests_Utils.AssertIsTypeForTwo<UnprocessableEntityResult, UnprocessableEntityObjectResult>(result);
+            ControllerTestsUtils.AssertIsTypeForTwo<UnprocessableEntityResult, UnprocessableEntityObjectResult>(result);
         }
 
         [Theory]
@@ -101,7 +102,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.CreateSwitch(switchToCreate);
 
-            SwitchesControllerTests_Utils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Fact]
@@ -111,7 +112,7 @@ namespace ApiProject.Test.Switches.ControllerPart
             controller.AddSampleErrorToModelState();
             IActionResult result = controller.UpdateSwitch(new(), 1);
 
-            SwitchesControllerTests_Utils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -130,7 +131,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.UpdateSwitch(new(), id);
 
-            SwitchesControllerTests_Utils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
         }
 
         [Theory]
@@ -150,7 +151,7 @@ namespace ApiProject.Test.Switches.ControllerPart
             controller.AddSampleErrorToModelState();
             IActionResult result = controller.DeleteSwitch(1);
 
-            SwitchesControllerTests_Utils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -159,7 +160,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.DeleteSwitch(id);
 
-            SwitchesControllerTests_Utils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
         }
 
         [Fact]

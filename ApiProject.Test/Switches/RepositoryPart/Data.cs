@@ -4,7 +4,7 @@ using ApiProject.Models;
 namespace ApiProject.Test.Switches.RepositoryPart
 {
 
-    internal static class MechaSwitchRepositoryTests_Data
+    internal static class Data
     {
         public static IEnumerable<object[]> SwitchExistsByObject_Method_UnexistedData
         {

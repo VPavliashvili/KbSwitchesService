@@ -2,9 +2,9 @@ using ApiProject.Services.Repositories;
 using ApiProject.Services.UnitsOfWork;
 using Xunit;
 
-namespace ApiProject.Test.Switches.MockUnitOfWorkPart
+namespace ApiProject.Test.UnitOfWorkPart
 {
-    public class UnitOfWorkTests
+    public class Tests
     {
 
         private IUnitOfWork UnitOfWork => new MockUnitOfWork();

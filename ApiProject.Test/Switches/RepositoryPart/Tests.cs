@@ -9,34 +9,35 @@ using ApiProject.Services.Repositories;
 using ApiProject.Services.UnitsOfWork;
 using Xunit;
 using Xunit.Abstractions;
+using ApiProject.Test.Helpers;
 
 namespace ApiProject.Test.Switches.RepositoryPart
 {
-    public partial class MechaSwitchRepositoryTests
+    public partial class Tests
     {
-        private IUnitOfWork UnitOfWork => new MockUnitOfWork();
+        private IMechaSwitchRepository SwitchesRepository => new MockUnitOfWork().SwitchesRepository;
 
         public static IEnumerable<object[]> SwitchExistsByObject_Method_UnexistedData
-            => MechaSwitchRepositoryTests_Data.SwitchExistsByObject_Method_UnexistedData;
+            => Data.SwitchExistsByObject_Method_UnexistedData;
         public static IEnumerable<object[]> SwitchExistsByObject_Method_ExistedData
-            => MechaSwitchRepositoryTests_Data.SwitchExistsByObject_Method_ExistedData;
+            => Data.SwitchExistsByObject_Method_ExistedData;
         public static IEnumerable<object[]> CreateSwitch_Method_Data
-            => MechaSwitchRepositoryTests_Data.CreateSwitch_Method_Data;
+            => Data.CreateSwitch_Method_Data;
         public static IEnumerable<object[]> UpdateSwitch_Method_Data
-            => MechaSwitchRepositoryTests_Data.UpdateSwitch_Method_Data;
+            => Data.UpdateSwitch_Method_Data;
         public static IEnumerable<object[]> TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data
-            => MechaSwitchRepositoryTests_Data.TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data;
+            => Data.TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data;
 
         [Fact]
         public void ShouldNotReturnNull_WhenAccessingSwitchesRepository()
         {
-            Assert.NotNull(UnitOfWork.SwitchesRepository);
+            Assert.NotNull(SwitchesRepository);
         }
 
         [Fact]
         public void ShouldNotReturnNull_WhenGettingAllSwitches()
         {
-            IEnumerable<MechaSwitch> allSwitches = UnitOfWork.SwitchesRepository.GetSwitches();
+            IEnumerable<MechaSwitch> allSwitches = SwitchesRepository.GetSwitches();
 
             Assert.NotNull(allSwitches);
         }
@@ -47,7 +48,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [InlineData(3)]
         public void ShouldNotReturnNull_WhenGettingSwitch(int id)
         {
-            MechaSwitch certainSwitchById = UnitOfWork.SwitchesRepository.GetSwitch(id);
+            MechaSwitch certainSwitchById = SwitchesRepository.GetSwitch(id);
 
             Assert.NotNull(certainSwitchById);
         }
@@ -58,7 +59,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [InlineData(3)]
         public void ShouldReturnTrue_WhenCheckingIfExists_WithExistingId(int id)
         {
-            bool switchExists = UnitOfWork.SwitchesRepository.SwitchExists(id);
+            bool switchExists = SwitchesRepository.SwitchExists(id);
 
             Assert.True(switchExists, $"Switch record on id {id} does not exists in dbContext");
         }
@@ -68,7 +69,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [InlineData(15)]
         public void ShouldReturnFalse_WhenCheckingIfExists_WithUnexistedId(int id)
         {
-            bool exists = UnitOfWork.SwitchesRepository.SwitchExists(id);
+            bool exists = SwitchesRepository.SwitchExists(id);
 
             Assert.False(exists, $"Switch record on id {id} already exists in dbContext");
         }
@@ -77,7 +78,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [MemberData(nameof(SwitchExistsByObject_Method_UnexistedData))]
         public void ShouldReturnFalse_WhenCheckingIfExist_WithUnexistingData(MechaSwitch @switch)
         {
-            bool switchExists = UnitOfWork.SwitchesRepository.SwitchExists(@switch);
+            bool switchExists = SwitchesRepository.SwitchExists(@switch);
 
             Assert.False(switchExists, $"Switch {@switch.FullName} already exists in dbContext");
         }
@@ -86,7 +87,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [MemberData(nameof(SwitchExistsByObject_Method_ExistedData))]
         public void ShouldReturnTrue_WhenCheckingIfExist_WithExistedData(MechaSwitch @switch)
         {
-            bool result = UnitOfWork.SwitchesRepository.SwitchExists(@switch);
+            bool result = SwitchesRepository.SwitchExists(@switch);
 
             Assert.True(result, $"Switch {@switch.FullName} does not exist in dbContext");
         }
@@ -95,7 +96,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [MemberData(nameof(CreateSwitch_Method_Data))]
         public void ShouldReturnTrue_WhenCreatingRecord_WithGoodArgument(MechaSwitch switchToCreate)
         {
-            bool switchCreated = UnitOfWork.SwitchesRepository.CreateSwitch(switchToCreate);
+            bool switchCreated = SwitchesRepository.CreateSwitch(switchToCreate);
 
             Assert.True(switchCreated, $"Something went wrong in dbContext during Creation of {switchToCreate.FullName} with id {switchToCreate.Id}");
         }
@@ -104,7 +105,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [MemberData(nameof(UpdateSwitch_Method_Data))]
         public void ShouldReturnTrue_WhenUpdatingRecord_WithGoodArguments(MechaSwitch sourceSwitch, int id)
         {
-            bool switchUpdated = UnitOfWork.SwitchesRepository.UpdateSwitch(sourceSwitch, id);
+            bool switchUpdated = SwitchesRepository.UpdateSwitch(sourceSwitch, id);
 
             Assert.True(switchUpdated, $"Something went wrong in dbContext during update of {sourceSwitch.FullName} with id {sourceSwitch.Id}");
         }
@@ -115,7 +116,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [InlineData(3)]
         public void ShouldReturnTrue_WhenDeletingRecord_WithExistingIdInDb(int id)
         {
-            bool switchDeleted = UnitOfWork.SwitchesRepository.DeleteSwitch(id);
+            bool switchDeleted = SwitchesRepository.DeleteSwitch(id);
 
             Assert.True(switchDeleted, $"Something went wrong in dbContext during delete switch record on id {id}");
         }
@@ -124,7 +125,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [InlineData(15)]
         public void ShouldReturnFalse_WhenDeletingRecord_WithUnExistedIdInDb(int id)
         {
-            bool deleted = UnitOfWork.SwitchesRepository.DeleteSwitch(id);
+            bool deleted = SwitchesRepository.DeleteSwitch(id);
 
             Assert.False(deleted, $"There is no record on id {id} in Db");
         }
@@ -133,9 +134,9 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [InlineData(25)]
         public void ShouldReturnTrue_WhenCreatedNewRecordInDb_IsBeingDeleted(int id)
         {
-            IMechaSwitchRepository repository = UnitOfWork.SwitchesRepository;
+            IMechaSwitchRepository repository = SwitchesRepository;
 
-            bool created = repository.CreateSwitch(MechaSwitchRepositoryTests_Data.GetMockSwitchWithCustomId(id));
+            bool created = repository.CreateSwitch(Data.GetMockSwitchWithCustomId(id));
             Assert.True(created, $"could not create new record");
 
             bool deleted = repository.DeleteSwitch(id);
@@ -146,10 +147,10 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [MemberData(nameof(TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data))]
         public void TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled(string methodName, object[] methodParams)
         {
-            if (UnitOfWork.SwitchesRepository is not MockMechaSwitchRepository)
+            if (SwitchesRepository is not MockMechaSwitchRepository)
                 throw new InvalidSubtypeException(typeof(IMechaSwitchRepository));
 
-            MockMechaSwitchRepository repository = (UnitOfWork.SwitchesRepository as MockMechaSwitchRepository);
+            MockMechaSwitchRepository repository = (SwitchesRepository as MockMechaSwitchRepository);
             MethodInfo targetMethod = repository.GetType().GetMethod(methodName);
 
             if (targetMethod == null)

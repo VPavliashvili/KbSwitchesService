@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xunit;
 
-namespace ApiProject.Test.Switches.ControllerPart
+namespace ApiProject.Test.Helpers
 {
-    internal static class SwitchesControllerTests_Utils
+    internal static class ControllerTestsUtils
     {
         public static void AssertIsTypeForTwo<TResult, TObjResult>(IActionResult result) where TResult : StatusCodeResult where TObjResult : ObjectResult
         {

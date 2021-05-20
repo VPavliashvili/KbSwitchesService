@@ -18,6 +18,7 @@ namespace ApiProject.Test.Switches.ControllerPart
     {
 
         private SwitchesController TargetController => new SwitchesController(new MockUnitOfWork());
+        private SwitchesParameters SwitchesParameters => new();
 
         public static IEnumerable<object[]> CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data
             => SwitchesControllerTestsData.CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data;
@@ -35,7 +36,9 @@ namespace ApiProject.Test.Switches.ControllerPart
         [Fact]
         public void GetSwitches_ShouldReturn_OkObjectResult()
         {
-            IActionResult result = TargetController.GetSwitches();
+            SwitchesController controller = TargetController;
+            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            IActionResult result = TargetController.GetSwitches(SwitchesParameters);
 
             Assert.IsType<OkObjectResult>(result);
         }
@@ -43,9 +46,9 @@ namespace ApiProject.Test.Switches.ControllerPart
         [Fact]
         public void GetSwitches_ShouldNotReturn_BadRequests()
         {
-            IActionResult result = TargetController.GetSwitches();
+            IActionResult result = TargetController.GetSwitches(SwitchesParameters);
 
-            ControllerTestsUtils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            TestingUtils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -76,7 +79,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.GetSwitch(id);
 
-            ControllerTestsUtils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            TestingUtils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -85,7 +88,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.CreateSwitch(duplicatingSwitch);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<UnprocessableEntityResult, UnprocessableEntityObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<UnprocessableEntityResult, UnprocessableEntityObjectResult>(result);
         }
 
         [Theory]
@@ -103,7 +106,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.CreateSwitch(switchToCreate);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Fact]
@@ -111,9 +114,9 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             string methodName = nameof(TargetController.UpdateSwitch);
             object[] @params = { new MechaSwitch(), 1 };
-            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName, @params);
+            IActionResult result = TestingUtils.AddErrorToModelStateAndGetResult<SwitchesController>(methodName, @params);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -132,7 +135,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.UpdateSwitch(new(), id);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
         }
 
         [Theory]
@@ -148,9 +151,9 @@ namespace ApiProject.Test.Switches.ControllerPart
         public void ShouldReturnBadRequest_WhenModelStateIsInvalid_AndDeletingRecord()
         {
             string methodName = nameof(TargetController.DeleteSwitch);
-            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName);
+            IActionResult result = TestingUtils.AddErrorToModelStateAndGetResult<SwitchesController>(methodName);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -159,7 +162,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.DeleteSwitch(id);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
         }
 
         [Fact]
@@ -207,16 +210,16 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.GetManufacturerOfSwitch(switchId);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
         }
 
         [Fact]
         public void ShouldReturnBadRequest_WhenModelstateIsInvalidAndGettingManufacturer()
         {
             string methodName = nameof(TargetController.GetManufacturerOfSwitch);
-            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName);
+            IActionResult result = TestingUtils.AddErrorToModelStateAndGetResult<SwitchesController>(methodName);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -227,7 +230,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.GetManufacturerOfSwitch(switchId);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<OkResult, OkObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<OkResult, OkObjectResult>(result);
         }
 
         [Theory]
@@ -237,16 +240,16 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.GetSwitchesOfManufacturer(manufacturerId);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
         }
 
         [Fact]
         public void ShouldReturnBadRequest_WhenGettingAllSwitchesOfManufacturerAndModelstateIsInvalid()
         {
             string methodName = nameof(TargetController.GetSwitchesOfManufacturer);
-            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName);
+            IActionResult result = TestingUtils.AddErrorToModelStateAndGetResult<SwitchesController>(methodName);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]
@@ -257,7 +260,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         {
             IActionResult result = TargetController.GetSwitchesOfManufacturer(manufacturerId);
 
-            ControllerTestsUtils.AssertIsTypeForTwo<OkResult, OkObjectResult>(result);
+            TestingUtils.AssertIsTypeForTwo<OkResult, OkObjectResult>(result);
         }
 
     }

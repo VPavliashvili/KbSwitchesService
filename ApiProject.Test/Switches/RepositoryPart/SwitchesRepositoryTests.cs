@@ -16,6 +16,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
     public partial class SwitchesRepositoryTests
     {
         private IMechaSwitchRepository SwitchesRepository => new MockUnitOfWork().SwitchesRepository;
+        private ApiProject.Controllers.SwitchesParameters SwitchesParameters => new();
 
         public static IEnumerable<object[]> SwitchExistsByObject_Method_UnexistedData
             => SwitchesRepositoryTestsData.SwitchExistsByObject_Method_UnexistedData;
@@ -37,7 +38,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         [Fact]
         public void ShouldNotReturnNull_WhenGettingAllSwitches()
         {
-            IEnumerable<MechaSwitch> allSwitches = SwitchesRepository.GetSwitches();
+            IEnumerable<MechaSwitch> allSwitches = SwitchesRepository.GetSwitches(SwitchesParameters);
 
             Assert.NotNull(allSwitches);
         }
@@ -151,13 +152,9 @@ namespace ApiProject.Test.Switches.RepositoryPart
                 throw new InvalidSubtypeException(typeof(IMechaSwitchRepository));
 
             MockMechaSwitchRepository repository = (SwitchesRepository as MockMechaSwitchRepository);
-            MethodInfo targetMethod = repository.GetType().GetMethod(methodName);
-
-            if (targetMethod == null)
-                throw new MissingMethodException("Repository");
-
             repository.EnableMethodMocking();
-            bool result = (bool)targetMethod.Invoke(repository, methodParams);
+            bool result = (bool)TestingUtils.GetMethod<MockMechaSwitchRepository>(methodName).Invoke(repository, methodParams);
+
             Assert.False(result);
         }
 

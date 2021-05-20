@@ -7,6 +7,7 @@ using ApiProject.Models;
 using ApiProject.Dtos;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace ApiProject.Controllers
 {
@@ -29,15 +30,27 @@ namespace ApiProject.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SwitchDto>))]
-        public IActionResult GetSwitches()
+        public IActionResult GetSwitches([FromQuery] SwitchesParameters switchesParameters)
         {
 
-            ICollection<MechaSwitch> switches = _switchesRepository.GetSwitches();
+            PagedList<MechaSwitch> switches = _switchesRepository.GetSwitches(switchesParameters);
 
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            var metadata = new
+            {
+                switches.TotalCount,
+                switches.PageSize,
+                switches.CurrentPage,
+                switches.TotalPages,
+                switches.HasNext,
+                switches.HasPrevious
+            };
+            if (Response != null)
+                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
             return Ok(switches.Select(swt => swt.ToDto()));
         }
@@ -177,6 +190,7 @@ namespace ApiProject.Controllers
             return NoContent();
         }
 
+        // api/switches/switchId/manufacturer
         [HttpGet("{switchId}/manufacturer")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -200,6 +214,7 @@ namespace ApiProject.Controllers
             return Ok(asDto);
         }
 
+        // api/switches/manufacturers/manufacturerId
         [HttpGet("manufacturers/{manufacturerId}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -218,4 +233,52 @@ namespace ApiProject.Controllers
         }
 
     }
+
+    public class SwitchesParameters : QueryParameters
+    {
+
+    }
+
+    public abstract class QueryParameters
+    {
+        private const int MaxPageSize = 50;
+        public int PageNumber { get; set; } = 1;
+
+        private int _pageSize = 10;
+
+        public int PageSize
+        {
+            get => _pageSize;
+            set => _pageSize = value > MaxPageSize ? MaxPageSize : value;
+        }
+    }
+
+    public class PagedList<T> : List<T>
+    {
+        public int CurrentPage { get; private set; }
+        public int TotalPages { get; private set; }
+        public int PageSize { get; private set; }
+        public int TotalCount { get; private set; }
+
+        public bool HasPrevious => CurrentPage > 1;
+        public bool HasNext => CurrentPage < TotalPages;
+
+        public PagedList(List<T> items, int count, int pageNumber, int pageSize)
+        {
+            TotalCount = count;
+            PageSize = pageSize;
+            CurrentPage = pageNumber;
+            TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+
+            AddRange(items);
+        }
+        public static PagedList<T> ToPagedList(IQueryable<T> source, int pageNumber, int pageSize)
+        {
+            int count = source.Count();
+            List<T> items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            return new PagedList<T>(items, count, pageNumber, pageSize);
+        }
+    }
+
 }

@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using ApiProject.Controllers;
 using ApiProject.Models;
 
 namespace ApiProject.Services.Repositories
 {
     public interface IMechaSwitchRepository
     {
-        ICollection<MechaSwitch> GetSwitches();
+        PagedList<MechaSwitch> GetSwitches(Controllers.SwitchesParameters switchesParameters);
         ICollection<MechaSwitch> GetSwitchesOfManufacturer(int manufacturerId);
         MechaSwitch GetSwitch(int id);
         Manufacturer GetManufacturerOfSwitch(int switchId);

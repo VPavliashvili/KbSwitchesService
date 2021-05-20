@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using ApiProject.Models;
 using ApiProject.Services.Contexts;
+using ApiProject.Controllers;
 
 namespace ApiProject.Services.Repositories
 {
@@ -25,9 +26,14 @@ namespace ApiProject.Services.Repositories
                     .FirstOrDefault(@switch => @switch.Id == id);
         }
 
-        public ICollection<MechaSwitch> GetSwitches()
+        public PagedList<MechaSwitch> GetSwitches(SwitchesParameters switchesParameters)
         {
-            return _dbContext.Switches.OrderBy(@switch => @switch.Manufacturer.Name).ToList();
+            return PagedList<MechaSwitch>.ToPagedList
+            (
+                _dbContext.Switches.OrderBy(@switch => @switch.Manufacturer.Name).AsQueryable(),
+                switchesParameters.PageNumber,
+                switchesParameters.PageSize
+            );
         }
 
         public ICollection<MechaSwitch> GetSwitchesOfManufacturer(int manufacturerId)

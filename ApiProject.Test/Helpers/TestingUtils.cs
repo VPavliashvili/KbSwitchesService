@@ -1,3 +1,4 @@
+using System.Reflection;
 using System;
 using ApiProject.Controllers;
 using ApiProject.Services.UnitsOfWork;
@@ -7,7 +8,7 @@ using Xunit;
 
 namespace ApiProject.Test.Helpers
 {
-    internal static class ControllerTestsUtils
+    internal static class TestingUtils
     {
         public static void AssertIsTypeForTwo<TResult, TObjResult>(IActionResult result) where TResult : StatusCodeResult where TObjResult : ObjectResult
         {
@@ -36,19 +37,27 @@ namespace ApiProject.Test.Helpers
             controller.ModelState.AddModelError("Test Key", "Test error description");
         }
 
-        public static IActionResult AddErrorToModelStateAndGetResult(string methodName)
+        public static IActionResult AddErrorToModelStateAndGetResult<T>(string methodName) where T : Controller
         {
             int existingSwitchId = 1;
-            SwitchesController controller = new SwitchesController(new MockUnitOfWork());
+            T controller = (T)Activator.CreateInstance(typeof(T), new object[] { new MockUnitOfWork() });
             controller.AddSampleErrorToModelState();
-            return (IActionResult)controller.GetType().GetMethod(methodName).Invoke(controller, new object[] { existingSwitchId });
+            return (IActionResult)GetMethod<SwitchesController>(methodName).Invoke(controller, new object[] { existingSwitchId });
         }
 
-        public static IActionResult AddErrorToModelStateAndGetResult(string methodName, object[] @params)
+        public static IActionResult AddErrorToModelStateAndGetResult<T>(string methodName, object[] @params) where T : Controller
         {
-            SwitchesController controller = new SwitchesController(new MockUnitOfWork());
+            T controller = (T)Activator.CreateInstance(typeof(T), new object[] { new MockUnitOfWork() });
             controller.AddSampleErrorToModelState();
-            return (IActionResult)controller.GetType().GetMethod(methodName).Invoke(controller, @params);
+            return (IActionResult)GetMethod<SwitchesController>(methodName).Invoke(controller, @params);
+        }
+
+        public static MethodInfo GetMethod<T>(string methodName)
+        {
+            MethodInfo method = typeof(T).GetMethod(methodName);
+            if (method == null)
+                throw new MissingMemberException($"Type {typeof(T)} does not contain method {methodName}");
+            return method;
         }
 
     }

@@ -4,7 +4,7 @@ using ApiProject.Models;
 namespace ApiProject.Test.Switches.RepositoryPart
 {
 
-    internal static class Data
+    internal static class SwitchesRepositoryTestsData
     {
         public static IEnumerable<object[]> SwitchExistsByObject_Method_UnexistedData
         {
@@ -14,7 +14,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
                 {
                         new MechaSwitch()
                         {
-                            Manufacturer = "Gateron",
+                            Manufacturer = Helpers.Data.Gateron,
                             FullName = "Gateron Blue",
                             Type = SwitchType.Clicky,
                             ActuationForce = 50,
@@ -28,11 +28,11 @@ namespace ApiProject.Test.Switches.RepositoryPart
                 {
                         new MechaSwitch()
                         {
-                            Manufacturer = "Cherry",
-                            FullName = "Cherry Blue",
+                            Manufacturer = Helpers.Data.Cherry,
+                            FullName = "Cherry Green",
                             Type = SwitchType.Clicky,
-                            ActuationForce = 50,
-                            BottomOutForce = 65,
+                            ActuationForce = 82,
+                            BottomOutForce = 87,
                             ActuationDistance = 1.9f,
                             BottomOutDistance = 4.0f,
                             Lifespan = 80_000_000
@@ -49,7 +49,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
                 {
                         new MechaSwitch()
                         {
-                            Manufacturer = "Razer",
+                            Manufacturer = Helpers.Data.Razer,
                             FullName = "Razer Green",
                             Type = SwitchType.Clicky,
                             ActuationForce = 50,
@@ -70,8 +70,8 @@ namespace ApiProject.Test.Switches.RepositoryPart
                 {
                         new MechaSwitch()
                         {
-                            Id = 4,
-                            Manufacturer = "Gateron",
+                            Id = 14,
+                            Manufacturer = Helpers.Data.Gateron,
                             FullName = "Gateron Blue",
                             Type = SwitchType.Clicky,
                             ActuationForce = 50,
@@ -93,7 +93,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
                     new MechaSwitch()
                     {
                         Id = 2,
-                        Manufacturer = "Kailh",
+                        Manufacturer = Helpers.Data.Gateron,
                         FullName = "Box Jade",
                         Type = SwitchType.Clicky,
                         ActuationForce = 50,
@@ -124,7 +124,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
             => new MechaSwitch()
             {
                 Id = id,
-                Manufacturer = "Kailh",
+                Manufacturer = Helpers.Data.Kailh,
                 FullName = "Box Jade",
                 Type = SwitchType.Clicky,
                 ActuationForce = 50,

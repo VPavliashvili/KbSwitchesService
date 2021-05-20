@@ -6,11 +6,12 @@ namespace ApiProject.Services.Repositories
     public interface IMechaSwitchRepository
     {
         ICollection<MechaSwitch> GetSwitches();
+        ICollection<MechaSwitch> GetSwitchesOfManufacturer(int manufacturerId);
         MechaSwitch GetSwitch(int id);
+        Manufacturer GetManufacturerOfSwitch(int switchId);
         bool SwitchExists(int id);
         bool SwitchExists(MechaSwitch @switch);
 
-        //TO DO create, update, delete
         bool CreateSwitch(MechaSwitch switchToCreate);
         bool UpdateSwitch(MechaSwitch sourceSwitch, int id);
         bool DeleteSwitch(int id);

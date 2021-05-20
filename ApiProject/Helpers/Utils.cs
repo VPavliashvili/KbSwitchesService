@@ -1,3 +1,4 @@
+using System.Collections.Specialized;
 using System;
 using ApiProject.Models;
 using ApiProject.Dtos;
@@ -25,7 +26,7 @@ namespace ApiProject
             => new SwitchDto()
             {
                 Id = @switch.Id,
-                Manufacturer = @switch.Manufacturer,
+                Manufacturer = @switch.Manufacturer.Name,
                 FullName = @switch.FullName,
                 SwitchType = @switch.Type.ToString(),
                 ActuationForce = @switch.ActuationForce,
@@ -36,8 +37,12 @@ namespace ApiProject
             };
 
         public static bool IsSameSwitch(this MechaSwitch @switch, MechaSwitch second)
-            => @switch.Manufacturer == second.Manufacturer
+            // => @switch.Manufacturer.Equals(second.Manufacturer)
+            => @switch.Manufacturer.IsSameManufacturer(second.Manufacturer)
             && @switch.FullName == second.FullName;
+
+        public static bool IsSameManufacturer(this Manufacturer manufacturer, Manufacturer second)
+            => manufacturer.Name == second.Name;
 
         public static void RemapValuesFromSource(this MechaSwitch @switch, MechaSwitch source)
         {
@@ -50,6 +55,12 @@ namespace ApiProject
             @switch.ActuationDistance = source.ActuationDistance;
             @switch.BottomOutDistance = source.BottomOutDistance;
             @switch.Lifespan = source.Lifespan;
+        }
+
+        public static void RemapValuesFromSource(this Manufacturer manufacturer, Manufacturer source)
+        {
+            manufacturer.Id = source.Id;
+            manufacturer.Name = source.Name;
         }
 
     }

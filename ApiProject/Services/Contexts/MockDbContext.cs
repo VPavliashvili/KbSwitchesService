@@ -5,100 +5,92 @@ using ApiProject.Models;
 
 namespace ApiProject.Services.Contexts
 {
-    public class MockDbContext : IDisposable
+    public class MockDbContext : IDbContext
     {
+        public IEnumerable<MechaSwitch> Switches => _switches.data;
+        public IEnumerable<Manufacturer> Manufacturers => _manufacturers.data;
 
-        public static int instanceCount;
-
-        public List<MechaSwitch> Switches { get; set; }
-
-        //mocking incremental Db id
-        private List<int> _indexes;
+        private readonly MockSet<MechaSwitch> _switches;
+        private readonly MockSet<Manufacturer> _manufacturers;
 
         public MockDbContext()
         {
-            instanceCount++;
-            _indexes = new();
-
-            Switches = new List<MechaSwitch>
-            {
-                new MechaSwitch()
-                {
-                    Id = 1,
-                    Manufacturer = "Razer",
-                    FullName = "Razer Green",
-                    Type = SwitchType.Clicky,
-                    ActuationForce = 50,
-                    BottomOutForce = 65,
-                    ActuationDistance = 1.9f,
-                    BottomOutDistance = 4.0f,
-                    Lifespan = 80_000_000,
-                },
-                new MechaSwitch()
-                {
-                    Id = 2,
-                    Manufacturer = "Razer",
-                    FullName = "Razer Orange",
-                    Type = SwitchType.Tactile,
-                    ActuationForce = 45,
-                    BottomOutForce = 55,
-                    ActuationDistance = 1.9f,
-                    BottomOutDistance = 4.0f,
-                    Lifespan = 80_000_000
-                },
-                new MechaSwitch()
-                {
-                    Id = 3,
-                    Manufacturer = "Razer",
-                    FullName = "Razer Yellow",
-                    Type = SwitchType.Linear,
-                    ActuationForce = 45,
-                    BottomOutForce = 75,
-                    ActuationDistance = 1.2f,
-                    BottomOutDistance = 3.5f,
-                    Lifespan = 80_000_000,
-                }
-            };
-
-            for (int i = 1; i <= Switches.Count; i++)
-            {
-                _indexes.Add(i);
-            }
+            MockDbData data = new();
+            _manufacturers = data.GetManufacturersMockData();
+            _switches = data.GetSwitchesMockData();
         }
 
-        public bool AddRecord(MechaSwitch newSwitchRecord)
+        public bool CreateSwitch(MechaSwitch newSwitchRecord)
         {
-            if (_indexes.Contains(newSwitchRecord.Id))
+            if (_switches.indexes.Contains(newSwitchRecord.Id))
                 return false;
 
-            Switches.Add(newSwitchRecord);
+            _switches.data.Add(newSwitchRecord);
 
-            _indexes.Add(newSwitchRecord.Id);
+            _switches.indexes.Add(newSwitchRecord.Id);
             return true;
         }
 
-        public bool ChangeRecord(MechaSwitch sourceSwitchRecord, int id)
+        public bool UpdateSwitch(MechaSwitch sourceSwitchRecord, int id)
         {
-            if (!_indexes.Contains(id))
+            if (!_switches.indexes.Contains(id))
                 return false;
 
-            MechaSwitch switchToEdit = Switches.FirstOrDefault(swt => swt.Id == id);
-            int indexOfSwitchToEdit = Switches.IndexOf(switchToEdit);
+            MechaSwitch switchToEdit = _switches.data.FirstOrDefault(swt => swt.Id == id);
+            int indexOfSwitchToEdit = _switches.data.IndexOf(switchToEdit);
             switchToEdit.RemapValuesFromSource(sourceSwitchRecord);
             switchToEdit.Id = id;
-            Switches[indexOfSwitchToEdit] = switchToEdit;
+            _switches.data[indexOfSwitchToEdit] = switchToEdit;
 
             return true;
         }
 
-        public bool DeleteRecord(int id)
+        public bool DeleteSwitch(int id)
         {
-            if (!_indexes.Contains(id))
+            if (!_switches.indexes.Contains(id))
                 return false;
 
-            MechaSwitch switchToDelete = Switches.FirstOrDefault(swt => swt.Id == id);
-            int indexOfSwitchToDelete = Switches.IndexOf(switchToDelete);
-            Switches.RemoveAt(indexOfSwitchToDelete);
+            MechaSwitch switchToDelete = _switches.data.FirstOrDefault(swt => swt.Id == id);
+            int indexOfSwitchToDelete = _switches.data.IndexOf(switchToDelete);
+            _switches.data.RemoveAt(indexOfSwitchToDelete);
+
+            return true;
+        }
+
+        public bool CreateManufacturer(Manufacturer newRecord)
+        {
+            if (_manufacturers.indexes.Contains(newRecord.Id)
+            || _manufacturers.data.FirstOrDefault(m => m.Name == newRecord.Name) != null)
+                return false;
+
+            _manufacturers.data.Add(newRecord);
+
+            _manufacturers.indexes.Add(newRecord.Id);
+            return true;
+        }
+
+        public bool UpdateManufacturer(Manufacturer sourceRecord, int id)
+        {
+            if (!_manufacturers.indexes.Contains(id))
+                return false;
+
+            Manufacturer manufacturerToEdit = _manufacturers.data.FirstOrDefault(m => m.Id == id);
+            int indexOfManufacturerToEdit = _manufacturers.data.IndexOf(manufacturerToEdit);
+            manufacturerToEdit.RemapValuesFromSource(sourceRecord);
+            manufacturerToEdit.Id = id;
+            _manufacturers.data[indexOfManufacturerToEdit] = manufacturerToEdit;
+
+            return true;
+        }
+
+        public bool DeleteManufacturer(int id)
+        {
+            if (!_manufacturers.indexes.Contains(id))
+                return false;
+
+            Manufacturer manufacturerToDelete = _manufacturers.data.FirstOrDefault(m => m.Id == id);
+            int indexOfManufacturerToDelete = _manufacturers.data.IndexOf(manufacturerToDelete);
+            _manufacturers.data.RemoveAt(indexOfManufacturerToDelete);
 
             return true;
         }
@@ -113,6 +105,8 @@ namespace ApiProject.Services.Contexts
             return;
         }
 
+
     }
 
 }
+

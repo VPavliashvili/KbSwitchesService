@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,7 +11,7 @@ namespace ApiProject.Models
         public int Id { get; set; }
 
         [Required]
-        public string Manufacturer { get; set; }
+        public Manufacturer Manufacturer { get; set; }
         [Required]
         public string FullName { get; set; }
 
@@ -26,6 +27,7 @@ namespace ApiProject.Models
         public float BottomOutDistance { get; set; }
         [Required]
         public int Lifespan { get; set; }
+
     }
 
 }

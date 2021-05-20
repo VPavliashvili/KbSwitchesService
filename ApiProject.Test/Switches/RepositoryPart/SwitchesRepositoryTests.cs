@@ -13,20 +13,20 @@ using ApiProject.Test.Helpers;
 
 namespace ApiProject.Test.Switches.RepositoryPart
 {
-    public partial class Tests
+    public partial class SwitchesRepositoryTests
     {
         private IMechaSwitchRepository SwitchesRepository => new MockUnitOfWork().SwitchesRepository;
 
         public static IEnumerable<object[]> SwitchExistsByObject_Method_UnexistedData
-            => Data.SwitchExistsByObject_Method_UnexistedData;
+            => SwitchesRepositoryTestsData.SwitchExistsByObject_Method_UnexistedData;
         public static IEnumerable<object[]> SwitchExistsByObject_Method_ExistedData
-            => Data.SwitchExistsByObject_Method_ExistedData;
+            => SwitchesRepositoryTestsData.SwitchExistsByObject_Method_ExistedData;
         public static IEnumerable<object[]> CreateSwitch_Method_Data
-            => Data.CreateSwitch_Method_Data;
+            => SwitchesRepositoryTestsData.CreateSwitch_Method_Data;
         public static IEnumerable<object[]> UpdateSwitch_Method_Data
-            => Data.UpdateSwitch_Method_Data;
+            => SwitchesRepositoryTestsData.UpdateSwitch_Method_Data;
         public static IEnumerable<object[]> TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data
-            => Data.TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data;
+            => SwitchesRepositoryTestsData.TargetMethodShouldReturnFalse_WhenMethodMockingIsEnabled_Data;
 
         [Fact]
         public void ShouldNotReturnNull_WhenAccessingSwitchesRepository()
@@ -136,7 +136,7 @@ namespace ApiProject.Test.Switches.RepositoryPart
         {
             IMechaSwitchRepository repository = SwitchesRepository;
 
-            bool created = repository.CreateSwitch(Data.GetMockSwitchWithCustomId(id));
+            bool created = repository.CreateSwitch(SwitchesRepositoryTestsData.GetMockSwitchWithCustomId(id));
             Assert.True(created, $"could not create new record");
 
             bool deleted = repository.DeleteSwitch(id);

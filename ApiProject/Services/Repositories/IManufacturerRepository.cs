@@ -5,6 +5,13 @@ namespace ApiProject.Services.Repositories
 {
     public interface IManufacturerRepository
     {
-        IEnumerable<Manufacturer> GetAll();
+        ICollection<Manufacturer> GetAll();
+        Manufacturer GetById(int id);
+        bool Exists(int id);
+        bool Exists(Manufacturer manufacturer);
+
+        bool Create(Manufacturer manufacturerTocreate);
+        bool Update(Manufacturer source, int id);
+        bool Delete(int id);
     }
 }

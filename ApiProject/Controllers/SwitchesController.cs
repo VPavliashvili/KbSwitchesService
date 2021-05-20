@@ -15,12 +15,14 @@ namespace ApiProject.Controllers
     public class SwitchesController : Controller
     {
         private readonly IMechaSwitchRepository _switchesRepository;
+        private readonly IManufacturerRepository _manufacturerRepository;
         private readonly IUnitOfWork _unitOfWork;
 
         public SwitchesController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _switchesRepository = _unitOfWork.SwitchesRepository;
+            _manufacturerRepository = _unitOfWork.ManufacturerRepository;
         }
 
         // api/switches
@@ -145,6 +147,10 @@ namespace ApiProject.Controllers
 
         // api/switches/switchId
         [HttpDelete("{switchId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
         public IActionResult DeleteSwitch(int switchId)
         {
 
@@ -169,6 +175,46 @@ namespace ApiProject.Controllers
             }
 
             return NoContent();
+        }
+
+        [HttpGet("{switchId}/manufacturer")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ManufacturerDto))]
+        public IActionResult GetManufacturerOfSwitch(int switchId)
+        {
+            if (!_switchesRepository.SwitchExists(switchId))
+                return NotFound();
+
+            Manufacturer manufacturer = _switchesRepository.GetManufacturerOfSwitch(switchId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            ManufacturerDto asDto = new()
+            {
+                Id = manufacturer.Id,
+                Name = manufacturer.Name
+            };
+
+            return Ok(asDto);
+        }
+
+        [HttpGet("manufacturers/{manufacturerId}")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<SwitchDto>))]
+        public IActionResult GetSwitchesOfManufacturer(int manufacturerId)
+        {
+            if (!_manufacturerRepository.Exists(manufacturerId))
+                return NotFound();
+
+            ICollection<MechaSwitch> switches = _switchesRepository.GetSwitchesOfManufacturer(manufacturerId);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            return Ok(switches.Select(swt => swt.ToDto()));
         }
 
     }

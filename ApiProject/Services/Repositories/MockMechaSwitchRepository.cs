@@ -27,7 +27,21 @@ namespace ApiProject.Services.Repositories
 
         public ICollection<MechaSwitch> GetSwitches()
         {
-            return _dbContext.Switches.OrderBy(@switch => @switch.Manufacturer).ToList();
+            return _dbContext.Switches.OrderBy(@switch => @switch.Manufacturer.Name).ToList();
+        }
+
+        public ICollection<MechaSwitch> GetSwitchesOfManufacturer(int manufacturerId)
+        {
+            return _dbContext.Switches
+                .Where(@switch => @switch.Manufacturer.Id == manufacturerId)
+                .ToList();
+        }
+
+        public Manufacturer GetManufacturerOfSwitch(int switchId)
+        {
+            return _dbContext.Switches
+                .FirstOrDefault(@switch => @switch.Id == switchId)
+                ?.Manufacturer;
         }
 
         public bool SwitchExists(int id)
@@ -42,17 +56,17 @@ namespace ApiProject.Services.Repositories
 
         public bool CreateSwitch(MechaSwitch switchToCreate)
         {
-            return _dbContext.AddRecord(switchToCreate) && !MethodMockingEnabled;
+            return _dbContext.CreateSwitch(switchToCreate) && !MethodMockingEnabled;
         }
 
         public bool UpdateSwitch(MechaSwitch sourceSwitch, int id)
         {
-            return _dbContext.ChangeRecord(sourceSwitch, id) && !MethodMockingEnabled;
+            return _dbContext.UpdateSwitch(sourceSwitch, id) && !MethodMockingEnabled;
         }
 
         public bool DeleteSwitch(int id)
         {
-            return _dbContext.DeleteRecord(id) && !MethodMockingEnabled;
+            return _dbContext.DeleteSwitch(id) && !MethodMockingEnabled;
         }
 
         public void EnableMethodMocking() => MethodMockingEnabled = true;

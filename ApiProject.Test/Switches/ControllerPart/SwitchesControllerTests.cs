@@ -13,17 +13,17 @@ using Xunit;
 namespace ApiProject.Test.Switches.ControllerPart
 {
 
-    public class Tests
+    public class SwitchesControllerTests
     {
 
         private SwitchesController TargetController => new SwitchesController(new MockUnitOfWork());
 
         public static IEnumerable<object[]> CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data
-            => Data.CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data;
+            => SwitchesControllerTestsData.CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data;
         public static IEnumerable<object[]> CreateSwitch_ShouldReturn_CreatedAtAction_IfSuccessful_Data
-            => Data.CreateSwitch_ShouldReturn_CreatedAtAction_IfSuccessful_Data;
+            => SwitchesControllerTestsData.CreateSwitch_ShouldReturn_CreatedAtAction_IfSuccessful_Data;
         public static IEnumerable<object[]> UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful_Data
-            => Data.UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful_Data;
+            => SwitchesControllerTestsData.UpdateSwitch_ShouldReturn_NoContent_WhenSuccessful_Data;
 
         [Fact]
         public void SwitchesController_ShouldBe_Controller()
@@ -48,7 +48,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         }
 
         [Theory]
-        [InlineData(4)] // at the time of writing this I have 3 objects in inmemory mock repository
+        [InlineData(41)] // at the time of writing this I have 6 objects in inmemory mock repository
         public void GetSwitch_ShouldReturn_NotFount_WhenWrongId(int id)
         {
             IActionResult result = TargetController.GetSwitch(id);
@@ -59,7 +59,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         [Theory]
         [InlineData(1)]
         [InlineData(2)]
-        [InlineData(3)] // at the time of writing this I have 3 objects in inmemory mock repository
+        [InlineData(3)] // at the time of writing this I have 6 objects in inmemory mock repository
         public void GetSwitch_ShouldReturn_OkObjectResult_WhenCorrectId(int id)
         {
             IActionResult result = TargetController.GetSwitch(id);
@@ -126,7 +126,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         }
 
         [Theory]
-        [InlineData(4)]
+        [InlineData(41)]
         public void UpdateSwitch_ShouldReturn_NotFound_WhenPassedIdIsMissingInDb(int id)
         {
             IActionResult result = TargetController.UpdateSwitch(new(), id);
@@ -200,6 +200,69 @@ namespace ApiProject.Test.Switches.ControllerPart
             IActionResult result = TargetController.DeleteSwitch(1);
 
             Assert.IsType<NoContentResult>(result);
+        }
+
+        [Theory]
+        [InlineData(10)]
+        public void ShouldReturnNotFound_WhenGettingManufacturerOfSwitchWithWrongId(int switchId)
+        {
+            IActionResult result = TargetController.GetManufacturerOfSwitch(switchId);
+
+            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public void ShouldReturnBadRequest_WhenModelstateIsInvalidAndGettingManufacturer()
+        {
+            int existingSwitchId = 1;
+            SwitchesController controller = TargetController;
+            controller.AddSampleErrorToModelState();
+            IActionResult result = controller.GetManufacturerOfSwitch(existingSwitchId);
+
+            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void ShouldReturnOk_WhenGettingManufacturerOfSwitchSuccessfully(int switchId)
+        {
+            IActionResult result = TargetController.GetManufacturerOfSwitch(switchId);
+
+            ControllerTestsUtils.AssertIsTypeForTwo<OkResult, OkObjectResult>(result);
+        }
+
+        [Theory]
+        [InlineData(10)]
+        [InlineData(27)]
+        public void ShouldReturnNotFound_WhenGettingAllSwitchesOfManufacturerWithWrongId(int manufacturerId)
+        {
+            IActionResult result = TargetController.GetSwitchesOfManufacturer(manufacturerId);
+
+            ControllerTestsUtils.AssertIsTypeForTwo<NotFoundResult, NotFoundObjectResult>(result);
+        }
+
+        [Fact]
+        public void ShouldReturnBadRequest_WhenGettingAllSwitchesOfManufacturerAndModelstateIsInvalid()
+        {
+            int existingSwitchId = 1;
+            SwitchesController controller = TargetController;
+            controller.AddSampleErrorToModelState();
+            IActionResult result = controller.GetSwitchesOfManufacturer(existingSwitchId);
+
+            ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(3)]
+        public void ShouldReturnOk_WhenGettingAllSwitchesOfManufacturerSuccessfully(int manufacturerId)
+        {
+            IActionResult result = TargetController.GetSwitchesOfManufacturer(manufacturerId);
+
+            ControllerTestsUtils.AssertIsTypeForTwo<OkResult, OkObjectResult>(result);
         }
 
     }

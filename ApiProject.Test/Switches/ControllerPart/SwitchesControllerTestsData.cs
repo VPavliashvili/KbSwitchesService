@@ -1,9 +1,10 @@
+using Microsoft.VisualBasic.CompilerServices;
 using System.Collections.Generic;
 using ApiProject.Models;
 
 namespace ApiProject.Test.Switches.ControllerPart
 {
-    internal static class Data
+    internal static class SwitchesControllerTestsData
     {
         public static IEnumerable<object[]> CreateSwitch_ShouldReturn_UnProcessableEntity_IfObjectIsDuplicating_Data
         {
@@ -14,7 +15,7 @@ namespace ApiProject.Test.Switches.ControllerPart
                     //this object is already defined in mockdbcontext with same manufacturer and fullname
                     new MechaSwitch()
                     {
-                        Manufacturer = "Razer",
+                        Manufacturer = Helpers.Data.Razer,
                         FullName = "Razer Green",
                         Type = SwitchType.Clicky,
                         ActuationForce = 50,
@@ -36,8 +37,8 @@ namespace ApiProject.Test.Switches.ControllerPart
                     //this object is not defined in mockdbcontext and is unique with its manufacturer and fullname
                     new MechaSwitch()
                     {
-                        Id = 4,
-                        Manufacturer = "Gateron",
+                        Id = 41,
+                        Manufacturer = Helpers.Data.Gateron,
                         FullName = "Gateron Blue",
                         Type = SwitchType.Clicky,
                         ActuationForce = 50,
@@ -59,7 +60,7 @@ namespace ApiProject.Test.Switches.ControllerPart
                     new MechaSwitch()
                     {
                         Id = 2,
-                        Manufacturer = "Kailh",
+                        Manufacturer = Helpers.Data.Kailh,
                         FullName = "Box Jade",
                         Type = SwitchType.Clicky,
                         ActuationForce = 50,

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using ApiProject.Controllers;
@@ -108,9 +109,9 @@ namespace ApiProject.Test.Switches.ControllerPart
         [Fact]
         public void UpdateSwitch_ShouldReturn_BadRequest_WhenModelstateIsNotValid()
         {
-            SwitchesController controller = TargetController;
-            controller.AddSampleErrorToModelState();
-            IActionResult result = controller.UpdateSwitch(new(), 1);
+            string methodName = nameof(TargetController.UpdateSwitch);
+            object[] @params = { new MechaSwitch(), 1 };
+            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName, @params);
 
             ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
@@ -146,10 +147,8 @@ namespace ApiProject.Test.Switches.ControllerPart
         [Fact]
         public void ShouldReturnBadRequest_WhenModelStateIsInvalid_AndDeletingRecord()
         {
-            SwitchesController controller = TargetController;
-
-            controller.AddSampleErrorToModelState();
-            IActionResult result = controller.DeleteSwitch(1);
+            string methodName = nameof(TargetController.DeleteSwitch);
+            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName);
 
             ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
@@ -214,10 +213,8 @@ namespace ApiProject.Test.Switches.ControllerPart
         [Fact]
         public void ShouldReturnBadRequest_WhenModelstateIsInvalidAndGettingManufacturer()
         {
-            int existingSwitchId = 1;
-            SwitchesController controller = TargetController;
-            controller.AddSampleErrorToModelState();
-            IActionResult result = controller.GetManufacturerOfSwitch(existingSwitchId);
+            string methodName = nameof(TargetController.GetManufacturerOfSwitch);
+            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName);
 
             ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
@@ -246,10 +243,8 @@ namespace ApiProject.Test.Switches.ControllerPart
         [Fact]
         public void ShouldReturnBadRequest_WhenGettingAllSwitchesOfManufacturerAndModelstateIsInvalid()
         {
-            int existingSwitchId = 1;
-            SwitchesController controller = TargetController;
-            controller.AddSampleErrorToModelState();
-            IActionResult result = controller.GetSwitchesOfManufacturer(existingSwitchId);
+            string methodName = nameof(TargetController.GetSwitchesOfManufacturer);
+            IActionResult result = ControllerTestsUtils.AddErrorToModelStateAndGetResult(methodName);
 
             ControllerTestsUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }

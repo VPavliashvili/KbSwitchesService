@@ -1,4 +1,6 @@
 using System;
+using ApiProject.Controllers;
+using ApiProject.Services.UnitsOfWork;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Xunit;
@@ -32,6 +34,21 @@ namespace ApiProject.Test.Helpers
         public static void AddSampleErrorToModelState(this Controller controller)
         {
             controller.ModelState.AddModelError("Test Key", "Test error description");
+        }
+
+        public static IActionResult AddErrorToModelStateAndGetResult(string methodName)
+        {
+            int existingSwitchId = 1;
+            SwitchesController controller = new SwitchesController(new MockUnitOfWork());
+            controller.AddSampleErrorToModelState();
+            return (IActionResult)controller.GetType().GetMethod(methodName).Invoke(controller, new object[] { existingSwitchId });
+        }
+
+        public static IActionResult AddErrorToModelStateAndGetResult(string methodName, object[] @params)
+        {
+            SwitchesController controller = new SwitchesController(new MockUnitOfWork());
+            controller.AddSampleErrorToModelState();
+            return (IActionResult)controller.GetType().GetMethod(methodName).Invoke(controller, @params);
         }
 
     }

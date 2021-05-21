@@ -35,7 +35,7 @@ namespace ApiProject.Test.Switches.ControllerPart
         }
 
         [Fact]
-        public void GetSwitches_ShouldReturn_OkObjectResult()
+        public void GetSwitches_ShouldReturn_OkObjectResult_WhenRequestIsSuccessful()
         {
             SwitchesController controller = TargetController;
             controller.ControllerContext.HttpContext = new DefaultHttpContext();
@@ -45,11 +45,36 @@ namespace ApiProject.Test.Switches.ControllerPart
         }
 
         [Fact]
-        public void GetSwitches_ShouldNotReturn_BadRequests()
+        public void GetSwitches_ShouldNotReturn_BadRequests_WhenRequestIsNotSuccessful()
         {
             IActionResult result = TargetController.GetSwitches(SwitchesParameters);
 
             TestingUtils.AssertIsNotTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void GetSwitches_ShouldReturnBadRequest_WhenFilteringIsNotValid()
+        {
+            SwitchesParameters parameters = new()
+            {
+                MinActuationForce = 50,
+                MaxActuationForce = 1
+            };
+            IActionResult result = TargetController.GetSwitches(parameters);
+
+            TestingUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
+        }
+
+        [Fact]
+        public void GetSwitches_ShouldReturnBadRequest_WhenFilteringByInvalidManufacturer()
+        {
+            SwitchesParameters parameters = new()
+            {
+                ManufacturerName = "InvalidName"
+            };
+            IActionResult result = TargetController.GetSwitches(parameters);
+
+            TestingUtils.AssertIsTypeForTwo<BadRequestResult, BadRequestObjectResult>(result);
         }
 
         [Theory]

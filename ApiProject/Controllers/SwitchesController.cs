@@ -41,6 +41,19 @@ namespace ApiProject.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (!switchesParameters.IsRangesValid())
+            {
+                switchesParameters.AddErrorMessageToModelState(ModelState);
+                return BadRequest(ModelState);
+            }
+
+            if (!_manufacturerRepository.Exists(switchesParameters.ManufacturerName) && switchesParameters.IsFilteringByManufacturer)
+            {
+                ModelState.AddModelError(string.Empty,
+                    $"Manufacturer with name {switchesParameters.ManufacturerName} does not exist in the Db");
+                return BadRequest(ModelState);
+            }
+
             var metadata = new
             {
                 switches.TotalCount,
@@ -50,6 +63,8 @@ namespace ApiProject.Controllers
                 switches.HasNext,
                 switches.HasPrevious
             };
+
+            //this line is added because of unit tests
             if (Response != null)
                 Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 

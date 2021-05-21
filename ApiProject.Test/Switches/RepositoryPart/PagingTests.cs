@@ -1,17 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
-using ApiProject.Controllers;
-using ApiProject.Dtos;
 using ApiProject.Models;
 using ApiProject.Services.Repositories;
 using ApiProject.Services.UnitsOfWork;
 using ApiProject.SortFilteringSearchAndPaging;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace ApiProject.Test.Switches.RepositoryPart
 {

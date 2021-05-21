@@ -9,6 +9,7 @@ namespace ApiProject.Services.Repositories
         Manufacturer GetById(int id);
         bool Exists(int id);
         bool Exists(Manufacturer manufacturer);
+        bool Exists(string name);
 
         bool Create(Manufacturer manufacturerTocreate);
         bool Update(Manufacturer source, int id);

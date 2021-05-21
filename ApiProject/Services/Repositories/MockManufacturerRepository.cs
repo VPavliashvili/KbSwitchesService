@@ -35,6 +35,11 @@ namespace ApiProject.Services.Repositories
             return _context.Manufacturers.Any(m => m.IsSameManufacturer(manufacturer));
         }
 
+        public bool Exists(string name)
+        {
+            return _context.Manufacturers.Any(m => m.Name.EqualsIgnoreCase(name));
+        }
+
         public bool Create(Manufacturer manufacturerTocreate)
         {
             return _context.CreateManufacturer(manufacturerTocreate);

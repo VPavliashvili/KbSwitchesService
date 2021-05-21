@@ -28,13 +28,21 @@ namespace ApiProject.Services.Repositories
                     .FirstOrDefault(@switch => @switch.Id == id);
         }
 
-        public PagedList<MechaSwitch> GetSwitches(SwitchesParameters switchesParameters)
+        public PagedList<MechaSwitch> GetSwitches(SwitchesParameters parameters)
         {
+            Func<MechaSwitch, bool> filterExpression = Utils.GetSwitchesFilterExpression(parameters);
+
+            IQueryable<MechaSwitch> filteredSwitches =
+                _dbContext.Switches
+                .Where(filterExpression)
+                .OrderBy(swt => swt.Manufacturer.Id)
+                .AsQueryable();
+
             return PagedList<MechaSwitch>.ToPagedList
             (
-                _dbContext.Switches.OrderBy(@switch => @switch.Manufacturer.Name).AsQueryable(),
-                switchesParameters.PageNumber,
-                switchesParameters.PageSize
+                filteredSwitches,
+                parameters.PageNumber,
+                parameters.PageSize
             );
         }
 

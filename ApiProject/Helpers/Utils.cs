@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using System;
 using ApiProject.Models;
 using ApiProject.Dtos;
+using ApiProject.SortFilteringSearchAndPaging;
 
 namespace ApiProject
 {
@@ -42,7 +43,7 @@ namespace ApiProject
             && @switch.FullName == second.FullName;
 
         public static bool IsSameManufacturer(this Manufacturer manufacturer, Manufacturer second)
-            => manufacturer.Name == second.Name;
+            => manufacturer.Name.EqualsIgnoreCase(second.Name);
 
         public static void RemapValuesFromSource(this MechaSwitch @switch, MechaSwitch source)
         {
@@ -62,6 +63,23 @@ namespace ApiProject
             manufacturer.Id = source.Id;
             manufacturer.Name = source.Name;
         }
+
+        public static bool EqualsIgnoreCase(this string target, string source)
+            => target.ToUpperInvariant() == source.ToUpperInvariant();
+
+        public static Func<MechaSwitch, bool> GetSwitchesFilterExpression(SwitchesParameters parameters)
+            => swt => swt.ActuationForce >= parameters.MinActuationForce
+                && swt.ActuationForce <= parameters.MaxActuationForce
+                && swt.BottomOutForce >= parameters.MinBottomOutForce
+                && swt.BottomOutForce <= parameters.MaxBottomOutForce
+                && swt.ActuationDistance >= parameters.MinActuationDistance
+                && swt.ActuationDistance <= parameters.MaxActuationDistance
+                && swt.BottomOutDistance >= parameters.MinBottomOutDistance
+                && swt.BottomOutDistance <= parameters.MaxBottomOutDistance
+                && swt.Lifespan >= parameters.MinLifespan
+                && swt.Lifespan <= parameters.MaxLifespan
+                && (parameters.IsFilteringByManufacturer ? swt.Manufacturer.Name.EqualsIgnoreCase(parameters.ManufacturerName) : true)
+                && (parameters.IsFilteringBySwitchType ? swt.Type == parameters.SwitchType : true);
 
     }
 

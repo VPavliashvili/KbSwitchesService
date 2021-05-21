@@ -10,13 +10,14 @@ using ApiProject.Services.UnitsOfWork;
 using Xunit;
 using Xunit.Abstractions;
 using ApiProject.Test.Helpers;
+using ApiProject.SortFilteringSearchAndPaging;
 
 namespace ApiProject.Test.Switches.RepositoryPart
 {
     public partial class SwitchesRepositoryTests
     {
         private IMechaSwitchRepository SwitchesRepository => new MockUnitOfWork().SwitchesRepository;
-        private ApiProject.Controllers.SwitchesParameters SwitchesParameters => new();
+        private SwitchesParameters SwitchesParameters => new();
 
         public static IEnumerable<object[]> SwitchExistsByObject_Method_UnexistedData
             => SwitchesRepositoryTestsData.SwitchExistsByObject_Method_UnexistedData;

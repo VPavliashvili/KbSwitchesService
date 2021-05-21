@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using ApiProject.Models;
 using ApiProject.Services.Contexts;
 using ApiProject.Controllers;
+using ApiProject.SortFilteringSearchAndPaging;
 
 namespace ApiProject.Services.Repositories
 {
@@ -12,6 +13,7 @@ namespace ApiProject.Services.Repositories
     {
 
         public bool MethodMockingEnabled { get; private set; }
+        public int RecordsCountInDb => _dbContext.Switches.Count();
 
         private readonly MockDbContext _dbContext;
 

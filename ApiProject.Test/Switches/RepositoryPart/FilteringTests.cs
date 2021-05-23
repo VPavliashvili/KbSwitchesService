@@ -27,9 +27,6 @@ namespace ApiProject.Test.Switches.RepositoryPart
         public static IEnumerable<object[]> ForLifespan_Data
             => FilteringTestsData.ForLifespan_Data;
 
-
-
-
         public FilteringTests()
         {
             _repository = new MockUnitOfWork().SwitchesRepository;

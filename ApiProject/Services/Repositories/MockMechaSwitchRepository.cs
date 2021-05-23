@@ -38,12 +38,21 @@ namespace ApiProject.Services.Repositories
                 .OrderBy(swt => swt.Manufacturer.Id)
                 .AsQueryable();
 
+            SearchByName(ref filteredSwitches, parameters.Name);
+
             return PagedList<MechaSwitch>.ToPagedList
             (
                 filteredSwitches,
                 parameters.PageNumber,
                 parameters.PageSize
             );
+        }
+
+        private void SearchByName(ref IQueryable<MechaSwitch> switches, string name)
+        {
+            if (!switches.Any() || string.IsNullOrWhiteSpace(name))
+                return;
+            switches = switches.Where(stw => stw.FullName.ToUpperInvariant().Contains(name.Trim().ToUpperInvariant()));
         }
 
         public ICollection<MechaSwitch> GetSwitchesOfManufacturer(int manufacturerId)

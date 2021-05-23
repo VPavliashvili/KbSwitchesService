@@ -1,8 +1,9 @@
-using System.Collections.Specialized;
+using System.Linq;
 using System;
 using ApiProject.Models;
 using ApiProject.Dtos;
 using ApiProject.SortFilteringSearchAndPaging;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ApiProject
 {
@@ -81,6 +82,27 @@ namespace ApiProject
                 && (parameters.IsFilteringByManufacturer ? swt.Manufacturer.Name.EqualsIgnoreCase(parameters.ManufacturerName) : true)
                 && (parameters.IsFilteringBySwitchType ? swt.Type == parameters.SwitchType : true);
 
+        public static bool IsRangesValid(this SwitchesParameters parameters)
+        {
+            return parameters.IsValidActuationForceRange && parameters.IsValidBottomOutForceRange
+                    && parameters.IsValidActuationDistanceRange && parameters.IsValidBottomOutDistanceRange
+                    && parameters.IsValidLifespan;
+        }
+
+        public static void AddErrorMessageToModelState(this SwitchesParameters parameters, ModelStateDictionary modelState)
+        {
+            string errorName = "fileringRangeError";
+            if (!parameters.IsValidActuationForceRange)
+                modelState.AddModelError(errorName, "MaxActuationForce can't be less than MinActuationForce of switch");
+            if (!parameters.IsValidBottomOutForceRange)
+                modelState.AddModelError(errorName, "MaxBottomOutForce can't be less than MinBottomOutForce of switch");
+            if (!parameters.IsValidActuationDistanceRange)
+                modelState.AddModelError(errorName, "MaxActuationDistance can't be less than MinActuationDistance of switch");
+            if (!parameters.IsValidBottomOutDistanceRange)
+                modelState.AddModelError(errorName, "MaxBottomOutDistance can't be less than MinBottomOutDistance of switch");
+            if (!parameters.IsValidLifespan)
+                modelState.AddModelError(errorName, "MaxLifespan can't be less than MinLifespan of switch");
+        }
     }
 
 }

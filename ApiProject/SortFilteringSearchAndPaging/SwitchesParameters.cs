@@ -34,26 +34,8 @@ namespace ApiProject.SortFilteringSearchAndPaging
         internal bool IsFilteringByManufacturer => !string.IsNullOrEmpty(ManufacturerName);
         internal bool IsFilteringBySwitchType => SwitchType != null;
 
-        public bool IsRangesValid()
-        {
-            return IsValidActuationForceRange && IsValidBottomOutForceRange
-                    && IsValidActuationDistanceRange && IsValidBottomOutDistanceRange
-                    && IsValidLifespan;
-        }
+        // for searching
+        public string Name { get; set; }
 
-        public void AddErrorMessageToModelState(ModelStateDictionary modelState)
-        {
-            string errorName = "fileringRangeError";
-            if (!IsValidActuationForceRange)
-                modelState.AddModelError(errorName, "MaxActuationForce can't be less than MinActuationForce of switch");
-            if (!IsValidBottomOutForceRange)
-                modelState.AddModelError(errorName, "MaxBottomOutForce can't be less than MinBottomOutForce of switch");
-            if (!IsValidActuationDistanceRange)
-                modelState.AddModelError(errorName, "MaxActuationDistance can't be less than MinActuationDistance of switch");
-            if (!IsValidBottomOutDistanceRange)
-                modelState.AddModelError(errorName, "MaxBottomOutDistance can't be less than MinBottomOutDistance of switch");
-            if (!IsValidLifespan)
-                modelState.AddModelError(errorName, "MaxLifespan can't be less than MinLifespan of switch");
-        }
     }
 }

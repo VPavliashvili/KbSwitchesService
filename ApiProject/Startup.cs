@@ -15,6 +15,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ApiProject.SwaggerFilters;
+using Newtonsoft.Json;
+using Swashbuckle.AspNetCore.Newtonsoft;
+using System.Text.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace ApiProject
 {
@@ -30,12 +35,20 @@ namespace ApiProject
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(o =>
+            {
+                o.SerializerSettings.Converters.Add(new StringEnumConverter
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                });
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Mechanical Keyboard Switches", Version = "v1" });
                 //c.DocumentFilter<SwaggerDocumentFilter>();
             });
+            services.AddSwaggerGenNewtonsoftSupport();
 
             services.AddSingleton<IUnitOfWork, MockUnitOfWork>();
 

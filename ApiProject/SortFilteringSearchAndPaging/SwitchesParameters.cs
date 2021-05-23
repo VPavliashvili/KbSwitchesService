@@ -7,6 +7,12 @@ namespace ApiProject.SortFilteringSearchAndPaging
 {
     public class SwitchesParameters : QueryParameters
     {
+
+        public SwitchesParameters()
+        {
+            OrderBy = "id";
+        }
+
         public uint MinActuationForce { get; set; } = 30;
         public uint MaxActuationForce { get; set; } = 200;
 

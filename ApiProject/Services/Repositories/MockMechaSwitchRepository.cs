@@ -6,6 +6,10 @@ using ApiProject.Models;
 using ApiProject.Services.Contexts;
 using ApiProject.Controllers;
 using ApiProject.SortFilteringSearchAndPaging;
+using System.Reflection;
+using System.Text;
+using System.Linq.Dynamic.Core;
+using ApiProject.Helpers;
 
 namespace ApiProject.Services.Repositories
 {
@@ -16,10 +20,12 @@ namespace ApiProject.Services.Repositories
         public int RecordsCountInDb => _dbContext.Switches.Count();
 
         private readonly MockDbContext _dbContext;
+        private readonly ISortHelper<MechaSwitch> _sortHelper;
 
-        public MockMechaSwitchRepository(MockDbContext context)
+        public MockMechaSwitchRepository(MockDbContext context, ISortHelper<MechaSwitch> sortHelper)
         {
             _dbContext = context;
+            _sortHelper = sortHelper;
         }
 
         public MechaSwitch GetSwitch(int id)
@@ -39,10 +45,11 @@ namespace ApiProject.Services.Repositories
                 .AsQueryable();
 
             SearchByName(ref filteredSwitches, parameters.Name);
+            IQueryable<MechaSwitch> sorted = _sortHelper.ApplySort(filteredSwitches, parameters.OrderBy);
 
             return PagedList<MechaSwitch>.ToPagedList
             (
-                filteredSwitches,
+                sorted,
                 parameters.PageNumber,
                 parameters.PageSize
             );

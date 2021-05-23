@@ -3,6 +3,7 @@ using ApiProject.Services.Repositories;
 using ApiProject.Services.Contexts;
 using ApiProject.Models;
 using System.Collections.Generic;
+using ApiProject.Helpers;
 
 namespace ApiProject.Services.UnitsOfWork
 {
@@ -18,7 +19,7 @@ namespace ApiProject.Services.UnitsOfWork
         {
             _context = new();
 
-            SwitchesRepository = new MockMechaSwitchRepository(_context);
+            SwitchesRepository = new MockMechaSwitchRepository(_context, new SortHelper<MechaSwitch>());
             ManufacturerRepository = new MockManufacturerRepository(_context);
         }
 
